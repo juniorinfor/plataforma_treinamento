@@ -1,0 +1,113 @@
+/* ============================================
+   TrainUp Design System - Theme
+   ============================================ */
+
+:root {
+    /* Primary - Ações principais */
+    --tu-primary: #2563EB;
+    --tu-primary-light: #3B82F6;
+    --tu-primary-dark: #1D4ED8;
+    --tu-primary-50: #EFF6FF;
+    --tu-primary-100: #DBEAFE;
+    --tu-primary-200: #BFDBFE;
+
+    /* Secondary - Premium/Especial */
+    --tu-secondary: #7C3AED;
+    --tu-secondary-light: #8B5CF6;
+    --tu-secondary-dark: #6D28D9;
+
+    /* Success - Correto/Completo */
+    --tu-success: #10B981;
+    --tu-success-light: #34D399;
+    --tu-success-dark: #059669;
+    --tu-success-50: #ECFDF5;
+
+    /* Danger - Errado/Corações */
+    --tu-danger: #EF4444;
+    --tu-danger-light: #F87171;
+    --tu-danger-dark: #DC2626;
+
+    /* Warning - Alertas */
+    --tu-warning: #F59E0B;
+    --tu-warning-light: #FBBF24;
+
+    /* XP - Dourado */
+    --tu-xp: #EAB308;
+    --tu-xp-light: #FDE047;
+    --tu-xp-dark: #CA8A04;
+    --tu-xp-glow: rgba(234, 179, 8, 0.4);
+
+    /* Streak - Fogo/Laranja */
+    --tu-streak: #F97316;
+    --tu-streak-light: #FB923C;
+    --tu-streak-dark: #EA580C;
+    --tu-streak-glow: rgba(249, 115, 22, 0.4);
+
+    /* Badge Rarities */
+    --tu-badge-common: #9CA3AF;
+    --tu-badge-uncommon: #10B981;
+    --tu-badge-rare: #3B82F6;
+    --tu-badge-epic: #8B5CF6;
+    --tu-badge-legendary: #F59E0B;
+
+    /* Neutrals */
+    --tu-bg: #F8FAFC;
+    --tu-bg-card: #FFFFFF;
+    --tu-bg-sidebar: #0F172A;
+    --tu-text: #1E293B;
+    --tu-text-secondary: #64748B;
+    --tu-text-muted: #94A3B8;
+    --tu-border: #E2E8F0;
+    --tu-border-light: #F1F5F9;
+
+    /* Shadows */
+    --tu-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --tu-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --tu-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --tu-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --tu-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+    /* Radius */
+    --tu-radius-sm: 0.375rem;
+    --tu-radius: 0.5rem;
+    --tu-radius-lg: 0.75rem;
+    --tu-radius-xl: 1rem;
+    --tu-radius-2xl: 1.5rem;
+    --tu-radius-full: 9999px;
+
+    /* Transitions */
+    --tu-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --tu-transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --tu-transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base body styles */
+body {
+    background-color: var(--tu-bg);
+    color: var(--tu-text);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--tu-text-muted);
+    border-radius: var(--tu-radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--tu-text-secondary);
+}
+
+/* Selection */
+::selection {
+    background-color: var(--tu-primary-200);
+    color: var(--tu-primary-dark);
+}

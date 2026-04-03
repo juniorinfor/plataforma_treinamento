@@ -1,0 +1,251 @@
+/* ============================================
+   TrainUp Design System - Component Styles
+   ============================================ */
+
+/* Card Base */
+.tu-card {
+    background: var(--tu-bg-card);
+    border-radius: var(--tu-radius-xl);
+    box-shadow: var(--tu-shadow-sm);
+    border: 1px solid var(--tu-border-light);
+    transition: box-shadow var(--tu-transition), transform var(--tu-transition);
+}
+.tu-card:hover {
+    box-shadow: var(--tu-shadow-md);
+}
+
+/* XP Bar */
+.tu-xp-bar {
+    height: 8px;
+    background: #E5E7EB;
+    border-radius: var(--tu-radius-full);
+    overflow: hidden;
+}
+.tu-xp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--tu-xp), var(--tu-xp-light));
+    border-radius: var(--tu-radius-full);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Progress Ring */
+.tu-progress-ring {
+    transform: rotate(-90deg);
+}
+.tu-progress-ring circle {
+    transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hearts */
+.tu-heart {
+    color: var(--tu-danger);
+    transition: transform var(--tu-transition-fast), opacity var(--tu-transition-fast);
+}
+.tu-heart-empty {
+    color: #D1D5DB;
+}
+
+/* Badge Card */
+.tu-badge-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 1rem;
+    border-radius: var(--tu-radius-xl);
+    background: var(--tu-bg-card);
+    border: 2px solid var(--tu-border);
+    transition: all var(--tu-transition);
+}
+.tu-badge-card.earned {
+    border-color: currentColor;
+}
+.tu-badge-card.locked {
+    opacity: 0.5;
+    filter: grayscale(1);
+}
+.tu-badge-card.rarity-common { color: var(--tu-badge-common); }
+.tu-badge-card.rarity-uncommon { color: var(--tu-badge-uncommon); }
+.tu-badge-card.rarity-rare { color: var(--tu-badge-rare); }
+.tu-badge-card.rarity-epic { color: var(--tu-badge-epic); }
+.tu-badge-card.rarity-legendary { color: var(--tu-badge-legendary); }
+
+/* Streak Fire */
+.tu-streak-fire {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 700;
+    color: var(--tu-streak);
+}
+.tu-streak-fire svg {
+    animation: fireFlicker 0.5s ease-in-out infinite;
+}
+.tu-streak-fire.inactive {
+    color: var(--tu-text-muted);
+}
+.tu-streak-fire.inactive svg {
+    animation: none;
+}
+
+/* Level Badge */
+.tu-level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--tu-radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--tu-primary), var(--tu-secondary));
+    color: white;
+}
+
+/* Quiz Option */
+.tu-quiz-option {
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--tu-border);
+    border-radius: var(--tu-radius-lg);
+    cursor: pointer;
+    transition: all var(--tu-transition-fast);
+    background: var(--tu-bg-card);
+    font-weight: 500;
+}
+.tu-quiz-option:hover {
+    border-color: var(--tu-primary-light);
+    background: var(--tu-primary-50);
+}
+.tu-quiz-option.selected {
+    border-color: var(--tu-primary);
+    background: var(--tu-primary-50);
+    box-shadow: 0 0 0 2px var(--tu-primary-200);
+}
+.tu-quiz-option.correct {
+    border-color: var(--tu-success);
+    background: var(--tu-success-50);
+}
+.tu-quiz-option.wrong {
+    border-color: var(--tu-danger);
+    background: #FEF2F2;
+    animation: shakeWrong 0.5s ease-in-out;
+}
+
+/* Sidebar */
+.tu-sidebar {
+    background: var(--tu-bg-sidebar);
+    color: #CBD5E1;
+}
+.tu-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    border-radius: var(--tu-radius-lg);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #94A3B8;
+    transition: all var(--tu-transition-fast);
+}
+.tu-sidebar-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #E2E8F0;
+}
+.tu-sidebar-link.active {
+    background: rgba(37, 99, 235, 0.15);
+    color: #60A5FA;
+}
+
+/* Button Primary */
+.tu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.5rem;
+    border-radius: var(--tu-radius-lg);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all var(--tu-transition-fast);
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+.tu-btn:active {
+    transform: scale(0.97);
+}
+.tu-btn-primary {
+    background: var(--tu-primary);
+    color: white;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.3);
+}
+.tu-btn-primary:hover {
+    background: var(--tu-primary-dark);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+.tu-btn-success {
+    background: var(--tu-success);
+    color: white;
+}
+.tu-btn-success:hover {
+    background: var(--tu-success-dark);
+}
+.tu-btn-outline {
+    background: transparent;
+    color: var(--tu-primary);
+    border: 2px solid var(--tu-primary);
+}
+.tu-btn-outline:hover {
+    background: var(--tu-primary-50);
+}
+.tu-btn-lg {
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    border-radius: var(--tu-radius-xl);
+}
+
+/* Leaderboard podium */
+.tu-podium-1 { background: linear-gradient(135deg, #FDE047, #EAB308); }
+.tu-podium-2 { background: linear-gradient(135deg, #E5E7EB, #9CA3AF); }
+.tu-podium-3 { background: linear-gradient(135deg, #FDBA74, #EA580C); }
+
+/* Progress Map Node */
+.tu-map-node {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    border: 3px solid;
+    transition: all var(--tu-transition);
+}
+.tu-map-node.completed {
+    background: var(--tu-success);
+    border-color: var(--tu-success-dark);
+    color: white;
+}
+.tu-map-node.current {
+    background: var(--tu-primary);
+    border-color: var(--tu-primary-dark);
+    color: white;
+    animation: nodePulse 2s ease-in-out infinite;
+}
+.tu-map-node.locked {
+    background: #E5E7EB;
+    border-color: #D1D5DB;
+    color: #9CA3AF;
+}
+
+/* Notification toast */
+.tu-toast {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    padding: 1rem 1.5rem;
+    border-radius: var(--tu-radius-xl);
+    box-shadow: var(--tu-shadow-xl);
+    animation: slideDown 0.3s ease-out;
+}
