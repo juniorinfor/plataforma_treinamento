@@ -23,6 +23,39 @@
 
     {{-- Course Grid --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 stagger-children">
+
+        {{-- Curso Personalizado: OnBoarding LeveMente --}}
+        @if($tab === 'all' || $tab === 'company')
+        <a href="{{ route('curso.levemente.onboarding') }}" target="_blank"
+           class="tu-card overflow-hidden hover-lift block animate-slide-up relative">
+            <div class="h-36 flex items-center justify-center text-white text-5xl font-bold relative overflow-hidden"
+                 style="background: linear-gradient(135deg, #2A5A42, #3D7A5E, #5A9E7C);">
+                🌿
+                <span class="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/20 backdrop-blur text-white">PERSONALIZADO</span>
+                <div style="position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;background:rgba(244,162,97,0.2);border-radius:50%;"></div>
+            </div>
+            <div class="p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background:#F0FAF515;color:#3D7A5E;border:1px solid #D4E8DC;">
+                        🍃 Alimentação
+                    </span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">
+                        Iniciante
+                    </span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-1">OnBoarding — Grupo LeveMente</h3>
+                <p class="text-xs text-gray-500 line-clamp-2">Conheça a história, missão, valores e estrutura do Grupo LeveMente. Com quiz interativo e certificado.</p>
+                <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
+                    <div class="flex items-center gap-3 text-xs text-gray-400">
+                        <span>~20min</span>
+                        <span>5 módulos</span>
+                    </div>
+                    <span class="text-xs font-bold" style="color: var(--tu-xp)">+250 XP</span>
+                </div>
+            </div>
+        </a>
+        @endif
+
         @forelse($courses as $course)
         <a href="{{ route('courses.show', $course->slug) }}" class="tu-card overflow-hidden hover-lift block animate-slide-up" wire:navigate>
             <div class="h-36 flex items-center justify-center text-white text-5xl font-bold relative"
