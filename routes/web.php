@@ -49,3 +49,8 @@ Route::middleware(['auth', 'company'])->group(function () {
     // SaaS
     Route::get('/plans', App\Livewire\Saas\PlansPage::class)->name('plans');
 });
+
+// Cursos Personalizados (acesso público para demonstração)
+Route::get('/curso/onboarding-levemente', function () {
+    return view('cursos.levemente.onboarding');
+})->name('curso.levemente.onboarding');
