@@ -1,9 +1,8 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/adsingular/public_html/app.adsingular.com
-    - /bin/cp -rf $DEPLOYPATH/public/build /home/adsingular/public_html/plataforma/
-    - /usr/local/bin/php $DEPLOYPATH/artisan config:clear
-    - /usr/local/bin/php $DEPLOYPATH/artisan view:clear
-    - /usr/local/bin/php $DEPLOYPATH/artisan route:clear
-    - /usr/local/bin/php $DEPLOYPATH/artisan cache:clear
+    - /bin/cp -rf public/build /home/adsingular/public_html/plataforma/
+    - /usr/local/bin/php artisan config:clear
+    - /usr/local/bin/php artisan view:clear
+    - /usr/local/bin/php artisan route:clear
+    - /usr/local/bin/php artisan cache:clear
