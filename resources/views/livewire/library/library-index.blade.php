@@ -67,13 +67,13 @@
     </div>
 
     {{-- ── BUSCA ──────────────────────────────────────────────── --}}
-    <div class="relative">
-        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border border-[var(--tu-border)] bg-white shadow-sm transition-all focus-within:border-[var(--tu-primary)] focus-within:ring-2 focus-within:ring-blue-100">
+        <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
         <input type="search" x-model="searchQuery"
             placeholder="Buscar por título, descrição ou tag..."
-            class="w-full pl-12 pr-4 py-3 rounded-xl border border-[var(--tu-border)] bg-white text-[var(--tu-text)] placeholder-gray-400 text-sm focus:outline-none focus:border-[var(--tu-primary)] focus:ring-2 focus:ring-[var(--tu-primary-200)] transition-all shadow-sm">
+            class="flex-1 bg-transparent text-[var(--tu-text)] placeholder-gray-400 text-sm outline-none border-none">
     </div>
 
     {{-- ── FILTROS POR TIPO ────────────────────────────────────── --}}
@@ -176,9 +176,9 @@
                         x-text="mat.description"></p>
 
                     {{-- Tags --}}
-                    <div class="flex flex-wrap gap-1.5 mt-4">
+                    <div class="flex flex-wrap gap-2 mt-4">
                         <template x-for="tag in mat.tags" :key="tag">
-                            <span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-[var(--tu-bg)] border border-[var(--tu-border)] text-[var(--tu-text-secondary)]"
+                            <span class="px-3 py-1 rounded-full text-[11px] font-medium bg-[var(--tu-bg)] border border-[var(--tu-border)] text-[var(--tu-text-secondary)]"
                                 x-text="tag"></span>
                         </template>
                     </div>
@@ -248,9 +248,9 @@
                 </div>
 
                 {{-- Tags (desktop) --}}
-                <div class="hidden lg:flex gap-1.5 flex-shrink-0">
+                <div class="hidden lg:flex gap-2 flex-shrink-0">
                     <template x-for="tag in mat.tags" :key="tag">
-                        <span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-[var(--tu-bg)] border border-[var(--tu-border)] text-[var(--tu-text-secondary)]"
+                        <span class="px-3 py-1 rounded-full text-[11px] font-medium bg-[var(--tu-bg)] border border-[var(--tu-border)] text-[var(--tu-text-secondary)]"
                             x-text="tag"></span>
                     </template>
                 </div>

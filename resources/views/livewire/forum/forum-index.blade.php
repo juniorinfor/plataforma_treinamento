@@ -224,16 +224,16 @@
 
                 <template x-for="topic in filteredTopics" :key="topic.id">
                     <div
-                        class="tu-card hover:shadow-md transition-all duration-200 cursor-pointer group"
+                        class="tu-card p-5 hover:shadow-md transition-all duration-200 cursor-pointer group"
                         :class="topic.pinned ? 'border-l-4' : ''"
                         :style="topic.pinned ? 'border-left-color: var(--tu-primary)' : ''"
                         @click="openThread(topic)"
                     >
-                        <div class="flex items-start gap-4">
+                        <div class="flex items-start gap-5">
 
                             {{-- Avatar --}}
                             <div
-                                class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-sm"
+                                class="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-base flex-shrink-0 shadow-sm"
                                 :style="`background: ${topic.authorColor}`"
                                 x-text="topic.authorInitials"
                             ></div>
@@ -314,31 +314,31 @@
         <div class="lg:w-72 flex-shrink-0 space-y-5">
 
             {{-- Top Contribuidores --}}
-            <div class="tu-card">
-                <h2 class="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <div class="tu-card p-5">
+                <h2 class="font-bold text-gray-900 mb-5 flex items-center gap-2">
                     <span class="text-xl">🏆</span>
                     Top Contribuidores
                 </h2>
-                <div class="space-y-3">
+                <div class="space-y-4">
                     <template x-for="(c, idx) in contributors" :key="c.name">
-                        <div class="flex items-center gap-3">
-                            <div class="relative">
+                        <div class="flex items-center gap-4">
+                            <div class="relative flex-shrink-0">
                                 <div
-                                    class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm"
+                                    class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm"
                                     :style="`background: ${c.color}`"
                                     x-text="c.initials"
                                 ></div>
                                 <template x-if="c.badge">
-                                    <span class="absolute -top-1 -right-1 text-xs leading-none" x-text="c.badge"></span>
+                                    <span class="absolute -top-1 -right-1 text-sm leading-none" x-text="c.badge"></span>
                                 </template>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 dark:text-white truncate" x-text="c.name"></p>
-                                <p class="text-xs text-gray-400" x-text="c.posts + ' posts'"></p>
+                                <p class="text-sm font-semibold text-gray-900 truncate" x-text="c.name"></p>
+                                <p class="text-xs text-gray-400 mt-0.5" x-text="c.posts + ' posts'"></p>
                             </div>
                             <div class="flex-shrink-0">
                                 <span
-                                    class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                                    class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
                                     :style="'background: var(--tu-primary)'"
                                     x-text="'#' + (idx + 1)"
                                 ></span>
@@ -349,24 +349,24 @@
             </div>
 
             {{-- Categorias --}}
-            <div class="tu-card">
-                <h2 class="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <div class="tu-card p-5">
+                <h2 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
                     <span class="text-xl">📁</span>
                     Categorias
                 </h2>
-                <div class="space-y-2">
+                <div class="space-y-1">
                     <template x-for="cat in categories.filter(c => c.key !== 'todos')" :key="cat.key">
                         <button
                             @click="activeCategory = cat.key"
-                            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50"
-                            :class="activeCategory === cat.key ? 'text-indigo-600 dark:text-indigo-400 font-medium bg-indigo-50 dark:bg-indigo-900/20' : 'text-gray-600 dark:text-gray-300'"
+                            class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-colors hover:bg-gray-50"
+                            :class="activeCategory === cat.key ? 'text-indigo-600 font-semibold bg-indigo-50' : 'text-gray-600'"
                         >
-                            <span class="flex items-center gap-2">
+                            <span class="flex items-center gap-3">
                                 <span x-text="cat.icon"></span>
                                 <span x-text="cat.label"></span>
                             </span>
                             <span
-                                class="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+                                class="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-500"
                                 x-text="cat.count"
                             ></span>
                         </button>
@@ -374,17 +374,17 @@
                 </div>
             </div>
 
-            {{-- Dicas --}}
-            <div class="tu-card" style="background: linear-gradient(135deg, var(--tu-primary) 0%, #818cf8 100%); border: none;">
+            {{-- CTA Participar --}}
+            <div class="rounded-2xl p-5" style="background: linear-gradient(135deg, var(--tu-primary) 0%, #818cf8 100%);">
                 <div class="text-white">
-                    <div class="text-2xl mb-2">💡</div>
-                    <h3 class="font-bold text-base mb-1">Participe do Fórum!</h3>
-                    <p class="text-sm text-white/80 leading-relaxed">
+                    <div class="text-3xl mb-3">💡</div>
+                    <h3 class="font-bold text-base mb-2">Participe do Fórum!</h3>
+                    <p class="text-sm text-white/80 leading-relaxed mb-4">
                         Compartilhe conhecimento, tire dúvidas e ajude seus colegas a crescerem juntos.
                     </p>
                     <button
                         @click="showNewTopicModal = true"
-                        class="mt-3 w-full bg-white/20 hover:bg-white/30 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors"
+                        class="w-full bg-white/20 hover:bg-white/30 text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition-colors"
                     >
                         Criar meu primeiro tópico
                     </button>
