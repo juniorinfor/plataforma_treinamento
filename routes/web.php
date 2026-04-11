@@ -46,6 +46,12 @@ Route::middleware(['auth', 'company'])->group(function () {
         Route::get('/reports', App\Livewire\Admin\ReportsPage::class)->name('admin.reports');
     });
 
+    // Comunidade
+    Route::get('/forum', App\Livewire\Forum\ForumIndex::class)->name('forum');
+
+    // Biblioteca
+    Route::get('/library', App\Livewire\Library\LibraryIndex::class)->name('library');
+
     // SaaS
     Route::get('/plans', App\Livewire\Saas\PlansPage::class)->name('plans');
 });
@@ -54,3 +60,7 @@ Route::middleware(['auth', 'company'])->group(function () {
 Route::get('/curso/onboarding-levemente', function () {
     return view('cursos.levemente.onboarding');
 })->name('curso.levemente.onboarding');
+
+Route::get('/curso/levemente-guia-completo', function () {
+    return view('cursos.levemente.guia-completo');
+})->name('curso.levemente.guia-completo');

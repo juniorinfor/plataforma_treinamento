@@ -70,6 +70,18 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
                 <span>Mapa de Progresso</span>
             </a>
+            <a href="{{ route('library') }}" class="tu-sidebar-link {{ request()->routeIs('library') ? 'active' : '' }}" wire:navigate>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>
+                <span>Biblioteca</span>
+            </a>
+
+            <div class="pt-4 pb-2">
+                <span class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Comunidade</span>
+            </div>
+            <a href="{{ route('forum') }}" class="tu-sidebar-link {{ request()->routeIs('forum*') ? 'active' : '' }}" wire:navigate>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
+                <span>Fórum</span>
+            </a>
 
             <div class="pt-4 pb-2">
                 <span class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Gamificacao</span>
