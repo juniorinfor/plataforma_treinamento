@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'TrainUp' }} - TrainUp</title>
+    <title>{{ $title ?? 'Executive Map' }} - Executive Map</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -29,7 +29,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                             </svg>
                         </div>
-                        <span class="text-3xl font-extrabold text-white tracking-tight">TrainUp</span>
+                        <span class="text-3xl font-extrabold text-white tracking-tight">Executive Map</span>
                     </div>
                     {{-- Logo alternativa: para usar, descomente abaixo e comente o bloco acima --}}
                     {{-- <div class="mb-6"><img src="{{ asset('images/logo_ad_singular_clara.png') }}" alt="Logo" class="h-14 w-auto"></div> --}}
@@ -74,7 +74,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
-                    <span class="text-2xl font-extrabold text-gray-900 tracking-tight">TrainUp</span>
+                    <span class="text-2xl font-extrabold text-gray-900 tracking-tight">Executive Map</span>
                     {{-- Logo mobile alternativa: para usar, descomente abaixo e comente o bloco acima --}}
                     <div class="h-16 flex items-center px-5 border-b border-white/10"><img src="{{ asset('images/logo_ad_singular_clara.png') }}" alt="Logo" class="h-9 w-auto"></div>
 

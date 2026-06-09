@@ -29,7 +29,8 @@
                 <input wire:model="lembrar" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                 <span class="text-sm text-gray-600">Lembrar-me</span>
             </label>
-            <a href="#" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Esqueceu a senha?</a>
+            <a href="{{ route('password.request') }}" wire:navigate
+               class="text-sm text-blue-600 hover:text-blue-700 font-medium">Esqueceu a senha?</a>
         </div>
 
         <button type="submit" class="tu-btn tu-btn-primary tu-btn-lg w-full"

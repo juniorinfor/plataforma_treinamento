@@ -37,7 +37,7 @@
 
         @if($lesson->contents->isEmpty())
         <div class="prose prose-gray max-w-none text-gray-700 leading-relaxed">
-            <p>Este conteudo sera preenchido em breve. Por enquanto, este e um preview da interface de visualizacao de aulas do TrainUp.</p>
+            <p>Este conteudo sera preenchido em breve. Por enquanto, este e um preview da interface de visualizacao de aulas do Executive Map.</p>
             <p>O sistema suporta varios tipos de conteudo:</p>
             <ul>
                 <li><strong>Texto formatado</strong> com titulos, listas e destaques</li>

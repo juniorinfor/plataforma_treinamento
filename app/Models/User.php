@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Enums\DiagnosticAssessmentStatus;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -69,24 +70,68 @@ class User extends Authenticatable
         return $this->hasMany(Certificate::class);
     }
 
+    public function diagnosticAssessments(): HasMany
+    {
+        return $this->hasMany(DiagnosticAssessment::class);
+    }
+
+    /**
+     * HasOne do tipo "latestOfMany" — seguro para eager loading em coleções.
+     */
+    public function latestDiagnosticAssessment(): HasOne
+    {
+        return $this->hasOne(DiagnosticAssessment::class)
+            ->where('status', DiagnosticAssessmentStatus::Completed)
+            ->latestOfMany('completed_at');
+    }
+
     public function pointTransactions(): HasMany
     {
         return $this->hasMany(PointTransaction::class);
     }
 
+    // ── Role helpers ─────────────────────────────────────────────────
+
+    /** Nível 3 — Admin do Sistema (desenvolvedor/plataforma). */
     public function isPlatformAdmin(): bool
     {
         return $this->role === UserRole::PlatformAdmin;
     }
 
+    /**
+     * Nível 2 — Gestor com billing.
+     * Pode alterar plano, pagar assinatura, gerenciar empresa.
+     */
     public function isCompanyAdmin(): bool
     {
         return $this->role === UserRole::CompanyAdmin;
     }
 
-    public function isManager(): bool
+    /**
+     * Nível 2 — Gestor (qualquer variante: company_admin ou manager).
+     * Pode ver dashboard, colaboradores e estatísticas da empresa.
+     */
+    public function isGestor(): bool
     {
-        return $this->role === UserRole::Manager;
+        return $this->role?->isGestor() ?? false;
+    }
+
+    /** Nível 1 — Colaborador. */
+    public function isEmployee(): bool
+    {
+        return $this->role === UserRole::Employee;
+    }
+
+    /** Retorna o nível numérico (1 / 2 / 3). */
+    public function roleLevel(): int
+    {
+        return $this->role?->level() ?? 1;
+    }
+
+    /** Pode gerenciar billing (só company_admin). */
+    public function canManageBilling(): bool
+    {
+        return $this->role?->canManageBilling() ?? false;
     }
 
     public function getTotalXpAttribute(): int

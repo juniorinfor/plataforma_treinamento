@@ -14,7 +14,8 @@ class Company extends Model
 
     protected $fillable = [
         'name', 'slug', 'logo_path', 'primary_color', 'secondary_color',
-        'email', 'phone', 'document', 'plan_id', 'subscription_status',
+        'email', 'phone', 'document', 'asaas_customer_id',
+        'plan_id', 'subscription_status',
         'trial_ends_at', 'max_users', 'settings', 'is_active',
     ];
 

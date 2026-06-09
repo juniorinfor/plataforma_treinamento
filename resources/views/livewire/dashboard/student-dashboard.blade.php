@@ -49,6 +49,105 @@
     </div>
     @endif
 
+    {{-- Diagnostic Banners --}}
+    <div class="grid grid-cols-2 gap-4 stagger-children">
+
+        {{-- Banner: Executive Mapping --}}
+        <a href="{{ route('diagnostics.index') }}" wire:navigate
+           class="relative overflow-hidden rounded-2xl p-6 hover-lift block animate-slide-up group"
+           style="background: linear-gradient(135deg, #0EA5E9 0%, #0369A1 100%)">
+            {{-- Decorative circles --}}
+            <div class="absolute -right-6 -top-6 w-32 h-32 rounded-full opacity-20"
+                 style="background: rgba(255,255,255,0.3)"></div>
+            <div class="absolute -right-2 bottom-4 w-20 h-20 rounded-full opacity-10"
+                 style="background: rgba(255,255,255,0.5)"></div>
+            {{-- Badge --}}
+            <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest
+                         bg-white/20 text-white px-2.5 py-1 rounded-full mb-3">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                Novo
+            </span>
+            <h3 class="text-white font-bold text-lg leading-tight mb-1">Executive Mapping</h3>
+            <p class="text-sky-100 text-sm mb-4 leading-snug">
+                Descubra seu perfil e potencial executivo com análise especializada.
+            </p>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3 text-sky-200 text-xs">
+                    <span class="flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        15 min
+                    </span>
+                    <span class="flex items-center gap-1 text-yellow-300 font-semibold">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        +80 XP
+                    </span>
+                </div>
+                <span class="inline-flex items-center gap-1.5 bg-white text-sky-700 text-xs font-bold
+                             px-3 py-1.5 rounded-full group-hover:bg-sky-50 transition-colors">
+                    Iniciar
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </span>
+            </div>
+        </a>
+
+        {{-- Banner: Diagnóstico de Inteligência Organizacional --}}
+        <a href="{{ route('diagnostics.index') }}" wire:navigate
+           class="relative overflow-hidden rounded-2xl p-6 hover-lift block animate-slide-up group"
+           style="background: linear-gradient(135deg, #6366F1 0%, #4338CA 100%)">
+            {{-- Decorative circles --}}
+            <div class="absolute -right-4 -top-8 w-36 h-36 rounded-full opacity-20"
+                 style="background: rgba(255,255,255,0.3)"></div>
+            <div class="absolute right-10 bottom-2 w-16 h-16 rounded-full opacity-10"
+                 style="background: rgba(255,255,255,0.5)"></div>
+            {{-- Badge --}}
+            <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest
+                         bg-white/20 text-white px-2.5 py-1 rounded-full mb-3">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Recomendado
+            </span>
+            <h3 class="text-white font-bold text-lg leading-tight mb-1">
+                Inteligência Organizacional
+            </h3>
+            <p class="text-indigo-200 text-sm mb-4 leading-snug">
+                Avalie sua organização com o AS SCORE® — 5 índices integrados.
+            </p>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3 text-indigo-300 text-xs">
+                    <span class="flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        25 min
+                    </span>
+                    <span class="flex items-center gap-1 text-yellow-300 font-semibold">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        +120 XP
+                    </span>
+                </div>
+                <span class="inline-flex items-center gap-1.5 bg-white text-indigo-700 text-xs font-bold
+                             px-3 py-1.5 rounded-full group-hover:bg-indigo-50 transition-colors">
+                    Iniciar
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </span>
+            </div>
+        </a>
+    </div>
+
     {{-- Grid: Continue Learning + Daily Challenges --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {{-- Continue Learning --}}

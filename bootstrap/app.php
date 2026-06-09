@@ -12,8 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'company' => \App\Http\Middleware\EnsureCompanyContext::class,
-            'role' => \App\Http\Middleware\CheckRole::class,
+            'company'      => \App\Http\Middleware\EnsureCompanyContext::class,
+            'role'         => \App\Http\Middleware\CheckRole::class,
+            'subscription' => \App\Http\Middleware\EnsureActiveSubscription::class,
+        ]);
+
+        // Exclui o webhook do Asaas da proteção CSRF
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/asaas',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

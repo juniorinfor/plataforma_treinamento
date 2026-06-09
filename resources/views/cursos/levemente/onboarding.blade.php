@@ -10,7 +10,7 @@
     <style>
         /* =============================================
            LeveMente OnBoarding — Design Exclusivo
-           Cores não afetam o restante do TrainUp
+           Cores não afetam o restante do Executive Map
         ============================================= */
         :root {
             --lm-primary: #3D7A5E;

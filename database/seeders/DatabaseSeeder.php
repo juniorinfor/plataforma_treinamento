@@ -251,5 +251,11 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+
+        // Diagnostics module (IO + 5 índices + Executive Mapping + demo)
+        $this->call(DiagnosticSeeder::class);
+
+        // Gamification: níveis completos, badges e desafios reais
+        $this->call(GamificationSeeder::class);
     }
 }

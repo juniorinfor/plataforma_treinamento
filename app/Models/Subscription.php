@@ -10,15 +10,30 @@ class Subscription extends Model
     protected $fillable = [
         'company_id', 'plan_id', 'status', 'starts_at', 'ends_at',
         'cancelled_at', 'payment_gateway', 'gateway_subscription_id',
+        'cycle', 'next_due_date',
     ];
 
     protected function casts(): array
     {
         return [
-            'starts_at' => 'datetime',
-            'ends_at' => 'datetime',
-            'cancelled_at' => 'datetime',
+            'status'        => \App\Enums\SubscriptionStatus::class,
+            'starts_at'     => 'datetime',
+            'ends_at'       => 'datetime',
+            'cancelled_at'  => 'datetime',
+            'next_due_date' => 'date',
         ];
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────
+
+    public function isActive(): bool
+    {
+        return $this->status?->isActive() ?? false;
+    }
+
+    public function cycleLabel(): string
+    {
+        return $this->cycle === 'YEARLY' ? 'Anual' : 'Mensal';
     }
 
     public function company(): BelongsTo
