@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Enums\DiagnosticAssessmentStatus;
 use App\Models\Badge;
 use App\Models\Challenge;
 use App\Models\Course;
+use App\Models\DiagnosticAssessment;
 use App\Models\DiagnosticTool;
 use App\Models\DiagnosticToolComponent;
 use App\Models\Enrollment;
@@ -15,6 +17,46 @@ use Livewire\Component;
 #[Layout('components.layouts.app')]
 class StudentDashboard extends Component
 {
+    /**
+     * Abre o diagnóstico do PRÓPRIO usuário a partir do banner:
+     *  - já concluído  → vai para o resultado;
+     *  - em andamento  → retoma o questionário;
+     *  - inexistente   → cria um rascunho e inicia.
+     */
+    public function goToDiagnostic(int $toolId): void
+    {
+        $tool = DiagnosticTool::published()->findOrFail($toolId);
+
+        $latest = DiagnosticAssessment::where('diagnostic_tool_id', $tool->id)
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->first();
+
+        if ($latest && $latest->isViewable()) {
+            $this->redirect(route('diagnostics.result', $latest->id), navigate: true);
+            return;
+        }
+
+        if ($latest && in_array($latest->status, [
+            DiagnosticAssessmentStatus::Draft,
+            DiagnosticAssessmentStatus::InProgress,
+        ], true)) {
+            $this->redirect(route('diagnostics.take', $latest->id), navigate: true);
+            return;
+        }
+
+        $assessment = DiagnosticAssessment::create([
+            'diagnostic_tool_id' => $tool->id,
+            'user_id'            => auth()->id(),
+            'company_id'         => auth()->user()->company_id,
+            'assigned_by'        => auth()->id(),
+            'tier'               => 'start',
+            'status'             => DiagnosticAssessmentStatus::Draft,
+        ]);
+
+        $this->redirect(route('diagnostics.take', $assessment->id), navigate: true);
+    }
+
     public function render()
     {
         $user = auth()->user();

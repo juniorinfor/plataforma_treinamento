@@ -81,4 +81,46 @@ class DiagnosticAssessment extends Model
     {
         return $this->status === DiagnosticAssessmentStatus::Completed;
     }
+
+    /**
+     * O assessment já tem resultado consultável?
+     */
+    public function isViewable(): bool
+    {
+        return in_array($this->status, [
+            DiagnosticAssessmentStatus::Completed,
+            DiagnosticAssessmentStatus::Submitted,
+            DiagnosticAssessmentStatus::Analyzing,
+            DiagnosticAssessmentStatus::InReview,
+        ], true);
+    }
+
+    /**
+     * Quem pode VISUALIZAR este assessment (resultado / plano):
+     *  - o próprio dono;
+     *  - o Admin do Sistema (platform_admin) — acesso a tudo;
+     *  - um Gestor da mesma empresa (supervisão).
+     *
+     * Responder o questionário (Take) continua restrito ao dono.
+     */
+    public function canBeViewedBy(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        if ($this->user_id === $user->id) {
+            return true;
+        }
+
+        if ($user->isPlatformAdmin()) {
+            return true;
+        }
+
+        if ($user->isGestor() && $this->company_id && $this->company_id === $user->company_id) {
+            return true;
+        }
+
+        return false;
+    }
 }

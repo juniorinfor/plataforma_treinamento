@@ -27,8 +27,22 @@ class DiagnosticTake extends Component
 
     public function mount(DiagnosticAssessment $assessment): void
     {
-        // Autorização: apenas o dono pode responder
-        if ($assessment->user_id !== auth()->id()) {
+        $user = auth()->user();
+
+        // Responder o questionário é exclusivo do dono.
+        // Admin/Gestor não respondem por outro: são redirecionados (sem 403).
+        if ($assessment->user_id !== $user->id) {
+            if ($assessment->canBeViewedBy($user) && $assessment->isViewable()) {
+                $this->redirect(route('diagnostics.result', $assessment->id), navigate: true);
+                return;
+            }
+
+            if ($assessment->canBeViewedBy($user)) {
+                session()->flash('error', 'Este diagnóstico pertence a outro usuário e ainda não foi concluído.');
+                $this->redirect(route('diagnostics.index'), navigate: true);
+                return;
+            }
+
             abort(403);
         }
 

@@ -54,8 +54,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
         @foreach($diagnosticTools as $tool)
         @php $c = $tool->color ?? '#6366F1'; @endphp
-        <a href="{{ route('diagnostics.index') }}" wire:navigate
-           class="relative overflow-hidden rounded-2xl p-6 hover-lift block animate-slide-up group text-white"
+        <div wire:click="goToDiagnostic({{ $tool->id }})" role="button" tabindex="0"
+           class="relative overflow-hidden rounded-2xl p-6 hover-lift block animate-slide-up group text-white cursor-pointer"
            style="background-color: {{ $c }}; background-image: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(0,0,0,0.28) 100%);">
             {{-- Decorative circles --}}
             <div class="absolute -right-6 -top-6 w-32 h-32 rounded-full opacity-20"
@@ -110,7 +110,7 @@
                     </svg>
                 </span>
             </div>
-        </a>
+        </div>
         @endforeach
     </div>
     @endif

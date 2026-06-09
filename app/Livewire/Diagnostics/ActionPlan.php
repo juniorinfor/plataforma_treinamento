@@ -21,8 +21,8 @@ class ActionPlan extends Component
 
     public function mount(DiagnosticAssessment $assessment): void
     {
-        // Apenas o dono do assessment pode ver o plano
-        abort_if($assessment->user_id !== auth()->id(), 403);
+        // Dono, Admin do Sistema ou Gestor da mesma empresa podem ver o plano.
+        abort_unless($assessment->canBeViewedBy(auth()->user()), 403);
 
         $this->assessmentId = $assessment->id;
 

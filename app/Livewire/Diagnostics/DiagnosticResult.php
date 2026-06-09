@@ -19,17 +19,19 @@ class DiagnosticResult extends Component
 
     public function mount(DiagnosticAssessment $assessment): void
     {
-        if ($assessment->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $user = auth()->user();
 
-        if (!in_array($assessment->status, [
-            DiagnosticAssessmentStatus::Completed,
-            DiagnosticAssessmentStatus::Submitted,
-            DiagnosticAssessmentStatus::Analyzing,
-            DiagnosticAssessmentStatus::InReview,
-        ], true)) {
-            $this->redirect(route('diagnostics.take', $assessment->id), navigate: true);
+        // Dono, Admin do Sistema ou Gestor da mesma empresa podem visualizar.
+        abort_unless($assessment->canBeViewedBy($user), 403);
+
+        if (!$assessment->isViewable()) {
+            // Ainda não concluído: o dono retoma; um supervisor volta ao índice.
+            if ($assessment->user_id === $user->id) {
+                $this->redirect(route('diagnostics.take', $assessment->id), navigate: true);
+            } else {
+                session()->flash('error', 'Este diagnóstico ainda não foi concluído.');
+                $this->redirect(route('diagnostics.index'), navigate: true);
+            }
             return;
         }
 
