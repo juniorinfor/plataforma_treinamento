@@ -63,6 +63,9 @@ class Nr1DiagnosticSeeder extends Seeder
                 . 'aponta o grau de implementação por área e gera um plano de ação para adequação.',
             'type'              => 'simple',
             'input_source'      => 'questionnaire',
+            'result_mode'       => 'aggregated',
+            'is_confidential'   => true,
+            'min_responses'     => 5,
             'requires_review'   => false,
             'icon'              => 'shield-check',
             'color'             => '#0D9488', // teal — leitura de "auditoria/conformidade"

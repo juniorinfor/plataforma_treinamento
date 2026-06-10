@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DiagnosticInputSource;
+use App\Enums\DiagnosticResultMode;
 use App\Enums\DiagnosticToolType;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -14,6 +15,7 @@ class DiagnosticTool extends Model
     protected $fillable = [
         'company_id', 'created_by', 'ai_provider_id', 'code', 'name', 'slug',
         'short_description', 'description', 'type', 'input_source',
+        'result_mode', 'is_confidential', 'min_responses',
         'requires_review', 'icon', 'color', 'estimated_minutes',
         'is_published', 'is_platform_tool', 'sort_order', 'xp_reward', 'settings',
     ];
@@ -23,6 +25,9 @@ class DiagnosticTool extends Model
         return [
             'type' => DiagnosticToolType::class,
             'input_source' => DiagnosticInputSource::class,
+            'result_mode' => DiagnosticResultMode::class,
+            'is_confidential' => 'boolean',
+            'min_responses' => 'integer',
             'requires_review' => 'boolean',
             'is_published' => 'boolean',
             'is_platform_tool' => 'boolean',
@@ -84,6 +89,35 @@ class DiagnosticTool extends Model
     public function isComposite(): bool
     {
         return $this->type === DiagnosticToolType::Composite;
+    }
+
+    // ── Modo de resultado / confidencialidade ─────────────────────────
+
+    public function isIndividual(): bool
+    {
+        return ($this->result_mode ?? DiagnosticResultMode::Individual) === DiagnosticResultMode::Individual;
+    }
+
+    public function isAggregated(): bool
+    {
+        return $this->result_mode === DiagnosticResultMode::Aggregated;
+    }
+
+    public function isCompanySingle(): bool
+    {
+        return $this->result_mode === DiagnosticResultMode::CompanySingle;
+    }
+
+    /** Tem consolidação por empresa (painel de gestor/admin)? */
+    public function hasCompanyAggregate(): bool
+    {
+        return $this->result_mode?->hasCompanyAggregate() ?? false;
+    }
+
+    /** Resultados individuais ficam ocultos para o gestor (só agregado)? */
+    public function hidesIndividualFromManager(): bool
+    {
+        return (bool) $this->is_confidential;
     }
 
     public function scopePublished($query)
