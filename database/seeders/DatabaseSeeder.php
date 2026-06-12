@@ -252,8 +252,15 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Diagnostics module (IO + 5 índices + Executive Mapping + demo)
+        // Diagnostics module (Executive Mapping + demo). O IO provisório criado
+        // aqui é substituído logo abaixo pelo AS SCORE® oficial.
         $this->call(DiagnosticSeeder::class);
+
+        // Diagnóstico de Conformidade com a NR1 (3º banner)
+        $this->call(Nr1DiagnosticSeeder::class);
+
+        // AS SCORE® oficial — substitui o IO provisório por 5 índices + IOH + eNPS
+        $this->call(AsScoreSeeder::class);
 
         // Gamification: níveis completos, badges e desafios reais
         $this->call(GamificationSeeder::class);

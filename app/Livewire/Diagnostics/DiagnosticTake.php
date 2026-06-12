@@ -112,14 +112,19 @@ class DiagnosticTake extends Component
         }
 
         if ($tool->dimensions->isNotEmpty()) {
-            return $tool->dimensions->map(fn ($dim) => [
-                'tool_id' => $tool->id,
-                'code' => $dim->code ?? $tool->code ?? '',
-                'name' => $dim->name,
-                'color' => $dim->color ?? $tool->color ?? '#3B82F6',
-                'icon' => $tool->icon ?? 'chart-bar',
-                'questions' => $dim->questions->sortBy('sort_order')->values()->all(),
-            ])->toArray();
+            return $tool->dimensions
+                // Dimensões sem perguntas (ex.: IOH, derivada) não viram etapa.
+                ->filter(fn ($dim) => $dim->questions->isNotEmpty())
+                ->map(fn ($dim) => [
+                    'tool_id' => $tool->id,
+                    'code' => $dim->code ?? $tool->code ?? '',
+                    'name' => $dim->name,
+                    'color' => $dim->color ?? $tool->color ?? '#3B82F6',
+                    'icon' => $tool->icon ?? 'chart-bar',
+                    'questions' => $dim->questions->sortBy('sort_order')->values()->all(),
+                ])
+                ->values()
+                ->toArray();
         }
 
         // Fallback: uma única etapa com todas as perguntas

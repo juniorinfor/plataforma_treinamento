@@ -146,7 +146,17 @@ class DiagnosticScoringService
         $weightTotal = 0.0;
 
         foreach ($dimensions as $dimension) {
+            // Dimensões derivadas (ex.: IOH, calculado à parte) ou informativas
+            // (peso 0, ex.: eNPS) não compõem a nota dos índices.
+            if ($dimension->code === 'IOH' || (float) $dimension->weight <= 0) {
+                continue;
+            }
+
             $questions = $dimension->questions;
+            if ($questions->isEmpty()) {
+                continue;
+            }
+
             [$rawScore, $maxScore] = $this->computeRawMax($questions, $rawAnswers, $optionValues);
             $normalized = $maxScore > 0 ? round(($rawScore / $maxScore) * 100, 2) : 0;
 
@@ -165,7 +175,49 @@ class DiagnosticScoringService
             $weightTotal += $weight;
         }
 
+        // Índice derivado (ex.: IOH): perguntas marcadas com settings.ioh = true,
+        // espalhadas pelos índices. Não entra na média global — é indicador à parte.
+        $this->scoreDerivedIndex($assessment, $dimensions, $rawAnswers, $optionValues);
+
         return $weightTotal > 0 ? round($weightedSum / $weightTotal, 2) : 0;
+    }
+
+    /**
+     * Computa o índice derivado (IOH) a partir das perguntas marcadas
+     * (settings.ioh = true) e o persiste vinculado à dimensão de código 'IOH'.
+     */
+    private function scoreDerivedIndex(
+        DiagnosticAssessment $assessment,
+        $dimensions,
+        array $rawAnswers,
+        \Illuminate\Support\Collection $optionValues
+    ): void {
+        $iohDimension = $dimensions->firstWhere('code', 'IOH');
+        if (!$iohDimension) {
+            return;
+        }
+
+        $iohQuestions = $dimensions
+            ->flatMap(fn ($d) => $d->questions)
+            ->filter(fn ($q) => (bool) data_get($q->settings, 'ioh') === true)
+            ->values();
+
+        if ($iohQuestions->isEmpty()) {
+            return;
+        }
+
+        [$rawScore, $maxScore] = $this->computeRawMax($iohQuestions, $rawAnswers, $optionValues);
+        $normalized = $maxScore > 0 ? round(($rawScore / $maxScore) * 100, 2) : 0;
+
+        DiagnosticResult::create([
+            'diagnostic_assessment_id' => $assessment->id,
+            'component_tool_id' => null,
+            'diagnostic_dimension_id' => $iohDimension->id,
+            'raw_score' => $rawScore,
+            'max_score' => $maxScore,
+            'normalized_score' => $normalized,
+            'label' => $this->label($normalized),
+        ]);
     }
 
     /**
