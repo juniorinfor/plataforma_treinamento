@@ -128,8 +128,8 @@ class UserManagement extends Component
         }
 
         // Inicializa gamificação
-        UserPoints::create(['user_id' => $user->id]);
-        Streak::create(['user_id' => $user->id, 'current_streak' => 0, 'longest_streak' => 0]);
+        UserPoints::create(['user_id' => $user->id, 'company_id' => $company->id]);
+        Streak::create(['user_id' => $user->id, 'company_id' => $company->id, 'current_streak' => 0, 'longest_streak' => 0]);
 
         // Envia e-mail de boas-vindas (silencia erro se SMTP não configurado)
         if ($this->sendEmail) {
