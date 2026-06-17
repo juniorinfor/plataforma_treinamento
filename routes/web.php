@@ -44,6 +44,8 @@ Route::middleware(['auth', 'company', 'subscription'])->group(function () {
     Route::middleware('role:gestor')->prefix('admin')->group(function () {
         Route::get('/', App\Livewire\Admin\AdminDashboard::class)->name('admin.dashboard');
         Route::get('/courses', App\Livewire\Admin\CourseManagement::class)->name('admin.courses');
+        Route::get('/courses/create', App\Livewire\Admin\CourseForm::class)->name('admin.courses.create');
+        Route::get('/courses/{course}/edit', App\Livewire\Admin\CourseForm::class)->name('admin.courses.edit');
         Route::get('/users', App\Livewire\Admin\UserManagement::class)->name('admin.users');
         Route::get('/reports', App\Livewire\Admin\ReportsPage::class)->name('admin.reports');
         Route::get('/diagnostics', App\Livewire\Admin\AdminDiagnostics::class)->name('admin.diagnostics');
