@@ -26,6 +26,14 @@ class StudentDashboard extends Component
     public function goToDiagnostic(int $toolId): void
     {
         $tool = DiagnosticTool::published()->findOrFail($toolId);
+        $user = auth()->user();
+
+        // Gestor e Admin do Sistema vão para o painel de resultados.
+        // (No painel, o gestor ainda pode "Responder o meu".)
+        if ($user->isPlatformAdmin() || $user->isGestor()) {
+            $this->redirect(route('diagnostics.panel', $tool->id), navigate: true);
+            return;
+        }
 
         $latest = DiagnosticAssessment::where('diagnostic_tool_id', $tool->id)
             ->where('user_id', auth()->id())

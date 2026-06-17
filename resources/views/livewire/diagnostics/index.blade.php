@@ -138,7 +138,17 @@
                     @endif
                 </div>
 
-                {{-- CTA --}}
+                {{-- CTA por papel --}}
+                @php $u = auth()->user(); @endphp
+                @if($u->isPlatformAdmin())
+                {{-- Admin do Sistema: apenas visualiza resultados (não responde) --}}
+                <a href="{{ route('diagnostics.panel', $tool->id) }}" wire:navigate
+                   class="block w-full text-center tu-btn py-2.5 text-sm font-semibold rounded-xl text-white"
+                   style="background: {{ $color }}">
+                    Ver resultados
+                </a>
+                @else
+                {{-- Respondente (colaborador e gestor) --}}
                 @if($isCompleted)
                 <button wire:click="viewResult({{ $assessment->id }})"
                         class="w-full tu-btn py-2.5 text-sm font-semibold rounded-xl text-white"
@@ -156,6 +166,16 @@
                         style="background: linear-gradient(135deg, {{ $color }}, {{ $color }}cc)">
                     Iniciar diagnóstico
                 </button>
+                @endif
+
+                {{-- Gestor: além de responder, acessa o resultado agregado da empresa --}}
+                @if($u->isGestor())
+                <a href="{{ route('diagnostics.panel', $tool->id) }}" wire:navigate
+                   class="mt-2 block w-full text-center py-2 text-xs font-semibold text-gray-500 hover:text-gray-800
+                          border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                    Resultado da empresa →
+                </a>
+                @endif
                 @endif
             </div>
         </div>

@@ -73,6 +73,8 @@ Route::middleware(['auth', 'company', 'subscription'])->group(function () {
         Route::get('/resultado/{assessment}', App\Livewire\Diagnostics\DiagnosticResult::class)->name('result');
         Route::get('/plano/{assessment}', App\Livewire\Diagnostics\ActionPlan::class)->name('action-plan');
         Route::get('/resultado/{assessment}/pdf', [App\Http\Controllers\DiagnosticReportPdfController::class, 'downloadAssessment'])->name('result.pdf');
+        // Painel de resultados (gestor: empresa; admin: todas as empresas)
+        Route::get('/{tool}/painel', App\Livewire\Diagnostics\DiagnosticPanel::class)->name('panel');
     });
 
     // Comunidade
