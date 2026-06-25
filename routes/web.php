@@ -69,6 +69,9 @@ Route::middleware(['auth', 'company', 'subscription'])->group(function () {
                 Route::get('/{report}/pdf', [App\Http\Controllers\DiagnosticReportPdfController::class, 'downloadReport'])->name('pdf');
             });
         });
+
+        // Integrações da plataforma (Asaas, etc.)
+        Route::get('/integracoes', App\Livewire\Platform\IntegrationSettings::class)->name('integrations');
     });
 
     // Diagnósticos

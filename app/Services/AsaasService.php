@@ -18,12 +18,29 @@ class AsaasService
 
     public function __construct()
     {
-        $env           = config('services.asaas.env', 'sandbox');
+        // Prioriza a configuração salva na tela de Integrações; cai para o .env.
+        $env = \App\Models\Setting::get('asaas_env') ?: config('services.asaas.env', 'sandbox');
+
         $this->baseUrl = $env === 'production'
             ? 'https://api.asaas.com/api/v3'
             : 'https://sandbox.asaas.com/api/v3';
 
-        $this->apiKey = config('services.asaas.key', '');
+        $this->apiKey = \App\Models\Setting::get('asaas_key') ?: config('services.asaas.key', '');
+    }
+
+    /** Testa a conexão/credencial com o Asaas. */
+    public function ping(): bool
+    {
+        if (!$this->apiKey) {
+            return false;
+        }
+
+        try {
+            $this->get('/myAccount');
+            return true;
+        } catch (Throwable) {
+            return false;
+        }
     }
 
     // ── Customers ─────────────────────────────────────────────────────
