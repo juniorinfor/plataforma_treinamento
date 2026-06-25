@@ -151,6 +151,20 @@ Responda EXCLUSIVAMENTE em JSON válido com este schema, sem nenhum texto fora d
 PROMPT;
     }
 
+    /** Testa o provedor de IA com um prompt trivial. */
+    public function testProvider(AiProvider $provider): bool
+    {
+        if (!$provider->api_key) {
+            return false;
+        }
+
+        try {
+            return trim($this->callAi($provider, 'Responda apenas com a palavra: OK')) !== '';
+        } catch (Throwable) {
+            return false;
+        }
+    }
+
     // ── Chamada de IA ─────────────────────────────────────────────────
 
     private function callAi(AiProvider $provider, string $prompt): string
