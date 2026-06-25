@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Learning;
 
+use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use App\Models\PointTransaction;
@@ -32,7 +33,7 @@ class LessonViewer extends Component
     {
         if ($this->completed) return;
 
-        $lesson = Lesson::findOrFail($this->id);
+        $lesson = Lesson::with('module.course')->findOrFail($this->id);
         $user   = auth()->user();
 
         LessonProgress::updateOrCreate(
@@ -63,6 +64,26 @@ class LessonViewer extends Component
                     'created_at'     => now(),
                 ]);
             }
+        }
+
+        $this->recalculateProgress($user->id, $lesson->module->course_id);
+    }
+
+    private function recalculateProgress(int $userId, int $courseId): void
+    {
+        $ids   = Lesson::join('modules', 'lessons.module_id', '=', 'modules.id')
+            ->where('modules.course_id', $courseId)
+            ->pluck('lessons.id');
+        $total = $ids->count();
+        $done  = LessonProgress::where('user_id', $userId)
+            ->whereIn('lesson_id', $ids)->whereNotNull('completed_at')->count();
+
+        if ($total > 0) {
+            Enrollment::where('user_id', $userId)->where('course_id', $courseId)->update([
+                'progress_percentage' => round($done / $total * 100, 2),
+                'status'              => $done >= $total ? 'completed' : 'active',
+                'completed_at'        => $done >= $total ? now() : null,
+            ]);
         }
     }
 

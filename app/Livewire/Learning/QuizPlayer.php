@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Learning;
 
+use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use App\Models\PointTransaction;
@@ -205,34 +206,39 @@ class QuizPlayer extends Component
         ]);
 
         $xpEarned = 0;
-        if ($passed && $quiz->xp_reward > 0) {
-            $user       = auth()->user();
-            $userPoints = UserPoints::where('user_id', $user->id)
-                ->where('company_id', $user->company_id)
-                ->first();
-
-            if ($userPoints) {
-                $xpEarned = $quiz->xp_reward;
-                $userPoints->increment('total_xp', $xpEarned);
-                $userPoints->increment('weekly_xp', $xpEarned);
-                $userPoints->increment('monthly_xp', $xpEarned);
-
-                PointTransaction::create([
-                    'user_id'        => $user->id,
-                    'company_id'     => $user->company_id,
-                    'xp_amount'      => $xpEarned,
-                    'type'           => 'quiz_pass',
-                    'description'    => "Aprovado: {$quiz->title}",
-                    'reference_type' => QuizAttempt::class,
-                    'reference_id'   => $attempt->id,
-                    'created_at'     => now(),
-                ]);
-            }
+        if ($passed) {
+            $user = auth()->user();
 
             LessonProgress::updateOrCreate(
                 ['user_id' => $user->id, 'lesson_id' => $this->lessonId],
                 ['status' => 'completed', 'completed_at' => now()]
             );
+
+            $this->recalculateProgress($user->id, $this->lessonId);
+
+            if ($quiz->xp_reward > 0) {
+                $userPoints = UserPoints::where('user_id', $user->id)
+                    ->where('company_id', $user->company_id)
+                    ->first();
+
+                if ($userPoints) {
+                    $xpEarned = $quiz->xp_reward;
+                    $userPoints->increment('total_xp', $xpEarned);
+                    $userPoints->increment('weekly_xp', $xpEarned);
+                    $userPoints->increment('monthly_xp', $xpEarned);
+
+                    PointTransaction::create([
+                        'user_id'        => $user->id,
+                        'company_id'     => $user->company_id,
+                        'xp_amount'      => $xpEarned,
+                        'type'           => 'quiz_pass',
+                        'description'    => "Aprovado: {$quiz->title}",
+                        'reference_type' => QuizAttempt::class,
+                        'reference_id'   => $attempt->id,
+                        'created_at'     => now(),
+                    ]);
+                }
+            }
         }
 
         $this->resultData = [
@@ -269,6 +275,28 @@ class QuizPlayer extends Component
     }
 
     // ── Helpers ───────────────────────────────────────────────────────
+
+    private function recalculateProgress(int $userId, int $lessonId): void
+    {
+        $lesson   = Lesson::with('module')->find($lessonId);
+        if (!$lesson) return;
+        $courseId = $lesson->module->course_id;
+
+        $ids   = Lesson::join('modules', 'lessons.module_id', '=', 'modules.id')
+            ->where('modules.course_id', $courseId)
+            ->pluck('lessons.id');
+        $total = $ids->count();
+        $done  = LessonProgress::where('user_id', $userId)
+            ->whereIn('lesson_id', $ids)->whereNotNull('completed_at')->count();
+
+        if ($total > 0) {
+            Enrollment::where('user_id', $userId)->where('course_id', $courseId)->update([
+                'progress_percentage' => round($done / $total * 100, 2),
+                'status'              => $done >= $total ? 'completed' : 'active',
+                'completed_at'        => $done >= $total ? now() : null,
+            ]);
+        }
+    }
 
     private function initAttempt(Quiz $quiz): void
     {

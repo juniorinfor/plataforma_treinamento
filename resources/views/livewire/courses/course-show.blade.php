@@ -36,7 +36,9 @@
             @else
             <div class="flex items-center justify-between">
                 <p class="text-gray-600">{{ $course->description }}</p>
-                <button class="tu-btn tu-btn-primary tu-btn-lg shrink-0 ml-4">Inscrever-se Gratis</button>
+                <button wire:click="enroll" class="tu-btn tu-btn-primary tu-btn-lg shrink-0 ml-4">
+                    Inscrever-se Grátis
+                </button>
             </div>
             @endif
         </div>

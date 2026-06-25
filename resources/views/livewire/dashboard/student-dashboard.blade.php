@@ -165,13 +165,14 @@
                     Desafio Diario
                 </h3>
                 <p class="text-sm text-gray-600 mt-2">Complete 3 aulas hoje</p>
+                @php $dailyGoal = 3; $dailyPct = min(round($lessonsTodayCount / $dailyGoal * 100), 100); @endphp
                 <div class="mt-3">
                     <div class="flex justify-between text-xs mb-1">
-                        <span class="text-gray-500">1 de 3 aulas</span>
+                        <span class="text-gray-500">{{ $lessonsTodayCount }} de {{ $dailyGoal }} aulas</span>
                         <span class="font-bold" style="color: var(--tu-xp)">+30 XP</span>
                     </div>
                     <div class="w-full bg-gray-100 rounded-full h-2.5">
-                        <div class="h-2.5 rounded-full" style="width: 33%; background: var(--tu-streak)"></div>
+                        <div class="h-2.5 rounded-full" style="width: {{ $dailyPct }}%; background: var(--tu-streak)"></div>
                     </div>
                 </div>
             </div>

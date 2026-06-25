@@ -10,6 +10,7 @@ use App\Models\DiagnosticAssessment;
 use App\Models\DiagnosticTool;
 use App\Models\DiagnosticToolComponent;
 use App\Models\Enrollment;
+use App\Models\LessonProgress;
 use App\Models\UserPoints;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -77,15 +78,18 @@ class StudentDashboard extends Component
             ->orderBy('sort_order')
             ->get();
 
+        $enrolledIds = Enrollment::where('user_id', $user->id)->pluck('course_id');
+
         return view('livewire.dashboard.student-dashboard', [
-            'user' => $user,
-            'enrollments' => Enrollment::where('user_id', $user->id)->with('course')->latest()->take(4)->get(),
-            'points' => UserPoints::where('user_id', $user->id)->first(),
-            'recentBadges' => $user->badges()->latest('user_badges.created_at')->take(4)->get(),
-            'diagnosticTools' => $diagnosticTools,
-            'availableCourses' => Course::where(function($q) use ($user) {
+            'user'               => $user,
+            'enrollments'        => Enrollment::where('user_id', $user->id)->with('course')->latest()->take(4)->get(),
+            'points'             => UserPoints::where('user_id', $user->id)->first(),
+            'recentBadges'       => $user->badges()->latest('user_badges.created_at')->take(4)->get(),
+            'diagnosticTools'    => $diagnosticTools,
+            'lessonsTodayCount'  => LessonProgress::where('user_id', $user->id)->whereDate('completed_at', today())->count(),
+            'availableCourses'   => Course::where(function ($q) use ($user) {
                 $q->where('company_id', $user->company_id)->orWhere('is_platform_course', true);
-            })->where('is_published', true)->take(4)->get(),
+            })->where('is_published', true)->whereNotIn('id', $enrolledIds)->take(4)->get(),
         ]);
     }
 }
