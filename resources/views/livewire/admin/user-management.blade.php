@@ -16,6 +16,59 @@
         </button>
     </div>
 
+    {{-- ── Link de auto-cadastro ── --}}
+    @if($this->company)
+    <div class="tu-card p-5">
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+            <div>
+                <h2 class="font-bold text-gray-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13.828 10.172a4 4 0 010 5.656l-3 3a4 4 0 11-5.656-5.656l1.5-1.5m6-6l1.5-1.5a4 4 0 115.656 5.656l-3 3a4 4 0 01-5.656 0"/>
+                    </svg>
+                    Link de auto-cadastro
+                </h2>
+                <p class="text-sm text-gray-500 mt-0.5">
+                    Compartilhe um link para os colaboradores se cadastrarem sozinhos na sua empresa.
+                </p>
+            </div>
+            <button wire:click="toggleSelfRegistration" type="button" title="Ativar/desativar"
+                    class="relative w-12 h-6 rounded-full transition-colors duration-200 shrink-0
+                           {{ $this->company->allow_self_registration ? 'bg-emerald-500' : 'bg-gray-200' }}">
+                <span class="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200
+                             {{ $this->company->allow_self_registration ? 'translate-x-6' : 'translate-x-0.5' }}"></span>
+            </button>
+        </div>
+
+        @if($this->company->allow_self_registration && $this->company->invite_token)
+            @php $link = $this->company->selfRegisterUrl(); @endphp
+            <div x-data="{ copied:false, copy(){ navigator.clipboard.writeText(@js($link)); this.copied=true; setTimeout(()=>this.copied=false,1500); } }"
+                 class="mt-4 flex items-center gap-2 flex-wrap">
+                <input type="text" readonly value="{{ $link }}"
+                       class="flex-1 min-w-[220px] px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl text-gray-600 font-mono">
+                <button type="button" @click="copy()"
+                        class="px-4 py-2.5 text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">
+                    <span x-show="!copied">Copiar</span>
+                    <span x-show="copied" x-cloak>Copiado!</span>
+                </button>
+                <button type="button" wire:click="regenerateLink"
+                        wire:confirm="Gerar um novo link? O link atual deixará de funcionar."
+                        class="px-4 py-2.5 text-sm font-semibold rounded-xl border-2 border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                    Regenerar
+                </button>
+            </div>
+            <p class="text-xs text-gray-400 mt-2">
+                {{ $this->company->activeUsersCount() }}{{ $this->company->max_users ? ' / ' . $this->company->max_users : '' }} colaboradores
+                @unless($this->company->hasCapacity())
+                · <span class="text-red-500 font-semibold">limite do plano atingido</span>
+                @endunless
+            </p>
+        @else
+            <p class="mt-3 text-sm text-gray-400">Ative a chave acima para gerar um link de cadastro compartilhável.</p>
+        @endif
+    </div>
+    @endif
+
     {{-- ── Filtros ── --}}
     <div class="flex flex-col sm:flex-row gap-3">
         <div class="relative flex-1">

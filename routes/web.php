@@ -15,6 +15,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', Register::class)->name('register');
     Route::get('/forgot-password', App\Livewire\Auth\ForgotPassword::class)->name('password.request');
     Route::get('/reset-password', App\Livewire\Auth\ResetPassword::class)->name('password.reset');
+    // Auto-cadastro de colaborador via link da empresa
+    Route::get('/cadastro/{token}', App\Livewire\Auth\JoinCompany::class)->name('company.join');
 });
 
 Route::post('/logout', function () {

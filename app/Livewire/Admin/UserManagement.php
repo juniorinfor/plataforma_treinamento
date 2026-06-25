@@ -63,6 +63,12 @@ class UserManagement extends Component
     }
 
     #[Computed]
+    public function company(): ?\App\Models\Company
+    {
+        return auth()->user()->company;
+    }
+
+    #[Computed]
     public function users()
     {
         $cid = auth()->user()->company_id;
@@ -98,6 +104,41 @@ class UserManagement extends Component
     {
         $this->resetInviteForm();
         $this->showInvite = true;
+    }
+
+    // ── Link de auto-cadastro ─────────────────────────────────────────
+
+    public function toggleSelfRegistration(): void
+    {
+        $company = auth()->user()->company;
+        if (!$company) {
+            return;
+        }
+
+        $enabled = !$company->allow_self_registration;
+
+        // Gera o token na primeira ativação
+        if ($enabled && !$company->invite_token) {
+            $company->invite_token = Str::random(48);
+        }
+
+        $company->allow_self_registration = $enabled;
+        $company->save();
+
+        unset($this->company);
+    }
+
+    public function regenerateLink(): void
+    {
+        $company = auth()->user()->company;
+        if (!$company) {
+            return;
+        }
+
+        $company->update(['invite_token' => Str::random(48)]);
+        unset($this->company);
+
+        session()->flash('status', 'Link de cadastro regenerado. O link anterior deixou de funcionar.');
     }
 
     public function createUser(): void
