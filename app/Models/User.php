@@ -134,6 +134,19 @@ class User extends Authenticatable
         return $this->role?->canManageBilling() ?? false;
     }
 
+    /**
+     * Rota inicial (home) de acordo com o papel — fonte única da verdade
+     * para o redirect pós-login e para o link "início" no menu.
+     */
+    public function homeRoute(): string
+    {
+        return match (true) {
+            $this->isPlatformAdmin() => 'platform.dashboard',
+            $this->isGestor()        => 'admin.dashboard',
+            default                  => 'dashboard',
+        };
+    }
+
     public function getTotalXpAttribute(): int
     {
         return $this->points?->total_xp ?? 0;

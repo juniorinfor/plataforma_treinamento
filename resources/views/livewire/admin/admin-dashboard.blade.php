@@ -24,6 +24,113 @@
         </div>
     </div>
 
+    {{-- ── Alertas ── --}}
+    @if(!empty($this->alerts))
+    <div class="tu-card p-4 border-l-4 border-amber-400 bg-amber-50/40">
+        <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            <h2 class="text-sm font-bold text-amber-800">Precisa de atenção</h2>
+        </div>
+        <ul class="space-y-1">
+            @foreach($this->alerts as $alert)
+            <li class="text-sm text-amber-800/90 flex items-start gap-2">
+                <span class="text-amber-400 mt-0.5">•</span><span>{{ $alert }}</span>
+            </li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    {{-- ── Cards acionáveis ── --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {{-- Colaboradores inativos --}}
+        <div class="tu-card p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="font-bold text-gray-900">Colaboradores inativos</h2>
+                    <p class="text-xs text-gray-400 mt-0.5">Sem login há +{{ 14 }} dias</p>
+                </div>
+                <span class="text-2xl font-black {{ $this->inactive['count'] > 0 ? 'text-red-600' : 'text-emerald-600' }}">
+                    {{ $this->inactive['count'] }}
+                </span>
+            </div>
+            @forelse($this->inactive['list'] as $u)
+            <div class="flex items-center gap-2.5 py-1.5">
+                <div class="w-7 h-7 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                    {{ substr($u->name, 0, 2) }}
+                </div>
+                <span class="text-sm text-gray-700 flex-1 truncate">{{ $u->name }}</span>
+                <span class="text-xs text-gray-400">
+                    {{ $u->last_login_at ? \Illuminate\Support\Carbon::parse($u->last_login_at)->diffForHumans(short: true) : 'nunca' }}
+                </span>
+            </div>
+            @empty
+            <p class="text-sm text-emerald-600 py-2">Todos ativos recentemente. 👏</p>
+            @endforelse
+            <a href="{{ route('admin.users') }}" wire:navigate
+               class="text-xs text-indigo-500 font-semibold mt-3 inline-flex items-center gap-1 hover:underline">Ver colaboradores →</a>
+        </div>
+
+        {{-- Compliance de obrigatórios --}}
+        <div class="tu-card p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold text-gray-900">Cursos obrigatórios</h2>
+                @if($this->mandatoryCompliance['overall'] !== null)
+                <span class="text-2xl font-black {{ $this->mandatoryCompliance['overall'] >= 70 ? 'text-emerald-600' : 'text-amber-600' }}">
+                    {{ $this->mandatoryCompliance['overall'] }}%
+                </span>
+                @endif
+            </div>
+            @forelse($this->mandatoryCompliance['rows'] as $row)
+            <div class="mb-3">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-sm text-gray-700 truncate max-w-[60%]">{{ $row['title'] }}</span>
+                    <span class="text-xs text-gray-500">{{ $row['completed'] }}/{{ $row['total'] }}</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-1.5">
+                    <div class="h-1.5 rounded-full transition-all {{ $row['pct'] >= 70 ? 'bg-emerald-500' : 'bg-amber-500' }}"
+                         style="width: {{ $row['pct'] }}%"></div>
+                </div>
+            </div>
+            @empty
+            <p class="text-sm text-gray-400 py-2">Nenhum curso obrigatório definido.</p>
+            @endforelse
+            <a href="{{ route('admin.courses') }}" wire:navigate
+               class="text-xs text-indigo-500 font-semibold mt-2 inline-flex items-center gap-1 hover:underline">Gerenciar cursos →</a>
+        </div>
+
+        {{-- Diagnósticos pendentes --}}
+        <div class="tu-card p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="font-bold text-gray-900">Diagnósticos pendentes</h2>
+                    <p class="text-xs text-gray-400 mt-0.5">Iniciados, não concluídos</p>
+                </div>
+                <span class="text-2xl font-black {{ $this->pendingDiagnostics['count'] > 0 ? 'text-amber-600' : 'text-emerald-600' }}">
+                    {{ $this->pendingDiagnostics['count'] }}
+                </span>
+            </div>
+            @forelse($this->pendingDiagnostics['list'] as $a)
+            <div class="flex items-center gap-2.5 py-1.5">
+                <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                    {{ substr($a->user?->name ?? '?', 0, 2) }}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-700 truncate">{{ $a->user?->name ?? '—' }}</p>
+                    <p class="text-xs text-gray-400 truncate">{{ $a->tool?->name ?? '—' }}</p>
+                </div>
+            </div>
+            @empty
+            <p class="text-sm text-emerald-600 py-2">Nenhum diagnóstico parado. ✅</p>
+            @endforelse
+            <a href="{{ route('admin.diagnostics') }}" wire:navigate
+               class="text-xs text-indigo-500 font-semibold mt-3 inline-flex items-center gap-1 hover:underline">Ver diagnósticos →</a>
+        </div>
+    </div>
+
     {{-- ── KPI Cards ── --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 

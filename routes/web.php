@@ -6,7 +6,10 @@ use Illuminate\Support\Facades\Route;
 
 // Public
 Route::get('/', function () {
-    return redirect()->route('login');
+    $user = auth()->user();
+    return $user
+        ? redirect()->route($user->homeRoute())
+        : redirect()->route('login');
 });
 
 // Auth
@@ -58,6 +61,8 @@ Route::middleware(['auth', 'company', 'subscription'])->group(function () {
 
     // Plataforma — exclusivo platform_admin (criação e gestão de ferramentas)
     Route::middleware('role:platform_admin')->prefix('platform')->name('platform.')->group(function () {
+        Route::get('/', App\Livewire\Platform\PlatformDashboard::class)->name('dashboard');
+
         Route::prefix('diagnostics')->name('diagnostics.')->group(function () {
             Route::get('/', App\Livewire\Platform\Diagnostics\ToolIndex::class)->name('index');
             Route::get('/prompts', App\Livewire\Platform\Diagnostics\PromptManager::class)->name('prompts');

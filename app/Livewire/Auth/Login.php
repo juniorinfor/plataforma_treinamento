@@ -35,7 +35,7 @@ class Login extends Component
             $user->update(['last_login_at' => now()]);
             session()->regenerate();
 
-            $this->redirect(route('dashboard'), navigate: true);
+            $this->redirect(route($user->homeRoute()), navigate: true);
         } else {
             $this->erro = 'Email ou senha incorretos.';
         }
