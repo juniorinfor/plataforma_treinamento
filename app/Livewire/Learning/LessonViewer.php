@@ -4,21 +4,24 @@ namespace App\Livewire\Learning;
 
 use App\Models\Lesson;
 use App\Models\LessonProgress;
-use App\Services\GamificationService;
+use App\Models\PointTransaction;
+use App\Models\UserPoints;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('components.layouts.app')]
+#[Title('Aula')]
 class LessonViewer extends Component
 {
-    public int $id;
+    public int  $id;
     public bool $completed = false;
 
     public function mount(int $id): void
     {
         $this->id = $id;
+        Lesson::findOrFail($id); // 404 se não existe
 
-        // Verifica se já foi concluída anteriormente
         $this->completed = LessonProgress::where('user_id', auth()->id())
             ->where('lesson_id', $id)
             ->whereNotNull('completed_at')
@@ -27,14 +30,11 @@ class LessonViewer extends Component
 
     public function completeLesson(): void
     {
-        if ($this->completed) {
-            return;
-        }
+        if ($this->completed) return;
 
         $lesson = Lesson::findOrFail($this->id);
         $user   = auth()->user();
 
-        // Registra progresso
         LessonProgress::updateOrCreate(
             ['user_id' => $user->id, 'lesson_id' => $lesson->id],
             ['status' => 'completed', 'completed_at' => now()]
@@ -42,23 +42,52 @@ class LessonViewer extends Component
 
         $this->completed = true;
 
-        // Gamificação
-        $result = app(GamificationService::class)->onLessonComplete($user, $lesson);
+        if ($lesson->xp_reward > 0) {
+            $userPoints = UserPoints::where('user_id', $user->id)
+                ->where('company_id', $user->company_id)
+                ->first();
 
-        $this->dispatch('xp-earned', amount: $result['xp']);
+            if ($userPoints) {
+                $userPoints->increment('total_xp', $lesson->xp_reward);
+                $userPoints->increment('weekly_xp', $lesson->xp_reward);
+                $userPoints->increment('monthly_xp', $lesson->xp_reward);
 
-        if ($result['leveled_up']) {
-            $this->dispatch('level-up');
-        }
-
-        if ($result['badges']->isNotEmpty()) {
-            $this->dispatch('badge-earned', badge: $result['badges']->first()->name);
+                PointTransaction::create([
+                    'user_id'        => $user->id,
+                    'company_id'     => $user->company_id,
+                    'xp_amount'      => $lesson->xp_reward,
+                    'type'           => 'lesson_complete',
+                    'description'    => "Aula concluída: {$lesson->title}",
+                    'reference_type' => Lesson::class,
+                    'reference_id'   => $lesson->id,
+                    'created_at'     => now(),
+                ]);
+            }
         }
     }
 
     public function render()
     {
         $lesson = Lesson::with(['contents', 'module.course'])->findOrFail($this->id);
-        return view('livewire.learning.lesson-viewer', ['lesson' => $lesson]);
+        [$prev, $next] = $this->adjacentLessons($lesson);
+
+        return view('livewire.learning.lesson-viewer', compact('lesson', 'prev', 'next'));
+    }
+
+    private function adjacentLessons(Lesson $lesson): array
+    {
+        $all = Lesson::join('modules', 'lessons.module_id', '=', 'modules.id')
+            ->where('modules.course_id', $lesson->module->course_id)
+            ->orderBy('modules.sort_order')
+            ->orderBy('lessons.sort_order')
+            ->select('lessons.id', 'lessons.type')
+            ->get();
+
+        $idx = $all->search(fn ($l) => $l->id === $lesson->id);
+
+        return [
+            $idx !== false && $idx > 0                   ? $all->get($idx - 1) : null,
+            $idx !== false && $idx < $all->count() - 1   ? $all->get($idx + 1) : null,
+        ];
     }
 }

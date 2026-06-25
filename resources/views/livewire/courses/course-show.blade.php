@@ -61,7 +61,7 @@
             </div>
             <div class="divide-y divide-gray-50">
                 @foreach($module->lessons as $li => $lesson)
-                <a href="{{ $lesson->type->value === 'quiz' ? route('quiz.play', $lesson->quiz?->id ?? $lesson->id) : route('lesson.view', $lesson->id) }}"
+                <a href="{{ $lesson->type->value === 'quiz' ? route('quiz.play', $lesson->id) : route('lesson.view', $lesson->id) }}"
                    class="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors" wire:navigate>
                     <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 {{ $li === 0 && $mi === 0 ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-400' }}">
                         @if($lesson->type->value === 'quiz')
