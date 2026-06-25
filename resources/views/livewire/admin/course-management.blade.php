@@ -47,8 +47,12 @@
                     </td>
                     <td class="px-5 py-4 text-right">
                         @if(auth()->user()->isPlatformAdmin())
-                        <a href="{{ route('admin.courses.edit', $course->id) }}" wire:navigate
-                           class="text-blue-600 hover:text-blue-700 text-sm font-medium">Editar</a>
+                        <div class="inline-flex items-center gap-3">
+                            <a href="{{ route('admin.courses.builder', $course->id) }}" wire:navigate
+                               class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">Conteúdo</a>
+                            <a href="{{ route('admin.courses.edit', $course->id) }}" wire:navigate
+                               class="text-blue-600 hover:text-blue-700 text-sm font-medium">Editar</a>
+                        </div>
                         @else
                         <span class="text-gray-300 text-sm">—</span>
                         @endif

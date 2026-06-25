@@ -127,7 +127,8 @@ class CourseForm extends Component
 
         session()->flash('status', 'Curso salvo com sucesso.');
 
-        return $this->redirect(route('admin.courses'), navigate: true);
+        // Após salvar, segue para montar o conteúdo (módulos e aulas).
+        return $this->redirect(route('admin.courses.builder', $course->id), navigate: true);
     }
 
     private function uniqueSlug(string $title): string
