@@ -49,6 +49,7 @@ Route::middleware(['auth', 'company', 'subscription'])->group(function () {
         Route::get('/courses/create', App\Livewire\Admin\CourseForm::class)->name('admin.courses.create');
         Route::get('/courses/{course}/edit', App\Livewire\Admin\CourseForm::class)->name('admin.courses.edit');
         Route::get('/courses/{course}/builder', App\Livewire\Admin\CourseBuilder::class)->name('admin.courses.builder');
+        Route::get('/courses/{course}/lessons/{lesson}/editor', App\Livewire\Admin\LessonEditor::class)->name('admin.courses.lesson.editor');
         Route::get('/users', App\Livewire\Admin\UserManagement::class)->name('admin.users');
         Route::get('/reports', App\Livewire\Admin\ReportsPage::class)->name('admin.reports');
         Route::get('/diagnostics', App\Livewire\Admin\AdminDiagnostics::class)->name('admin.diagnostics');

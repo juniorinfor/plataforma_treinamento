@@ -82,8 +82,12 @@
                             class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 disabled:opacity-30" title="Descer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </button>
+                    <a href="{{ route('admin.courses.lesson.editor', [$this->course->id, $lesson->id]) }}" wire:navigate
+                       class="p-1.5 rounded-lg hover:bg-indigo-50 text-indigo-500" title="Editar conteúdo">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                    </a>
                     <button wire:click="openLessonModal({{ $module->id }}, {{ $lesson->id }})"
-                            class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500" title="Editar">
+                            class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500" title="Renomear aula">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     </button>
                     <button wire:click="deleteLesson({{ $lesson->id }})" wire:confirm="Excluir esta aula?"
