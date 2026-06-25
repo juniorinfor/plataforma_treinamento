@@ -6,13 +6,24 @@
             <h1 class="text-2xl font-bold text-gray-900">Ferramentas de Diagnóstico</h1>
             <p class="text-sm text-gray-500 mt-1">Gerencie as ferramentas disponíveis para os clientes.</p>
         </div>
-        <a href="{{ route('platform.diagnostics.create') }}" wire:navigate
-           class="tu-btn tu-btn-primary flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            Nova Ferramenta
-        </a>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('platform.diagnostics.prompts') }}" wire:navigate
+               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-gray-200 text-gray-600
+                      hover:bg-gray-50 text-sm font-semibold transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+                Prompts de IA
+            </a>
+            <a href="{{ route('platform.diagnostics.create') }}" wire:navigate
+               class="tu-btn tu-btn-primary flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Nova Ferramenta
+            </a>
+        </div>
     </div>
 
     {{-- Tabela --}}

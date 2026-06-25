@@ -57,6 +57,7 @@ Route::middleware(['auth', 'company', 'subscription'])->group(function () {
     Route::middleware('role:platform_admin')->prefix('platform')->name('platform.')->group(function () {
         Route::prefix('diagnostics')->name('diagnostics.')->group(function () {
             Route::get('/', App\Livewire\Platform\Diagnostics\ToolIndex::class)->name('index');
+            Route::get('/prompts', App\Livewire\Platform\Diagnostics\PromptManager::class)->name('prompts');
             Route::get('/create', App\Livewire\Platform\Diagnostics\ToolForm::class)->name('create');
             Route::get('/{tool}/edit', App\Livewire\Platform\Diagnostics\ToolForm::class)->name('edit');
             Route::get('/{tool}/questions', App\Livewire\Platform\Diagnostics\QuestionManager::class)->name('questions');

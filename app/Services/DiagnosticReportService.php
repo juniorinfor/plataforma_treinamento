@@ -77,13 +77,23 @@ class DiagnosticReportService
 
     // ── Prompt ────────────────────────────────────────────────────────
 
+    /**
+     * Instrução padrão usada quando o diagnóstico não tem um prompt próprio.
+     */
+    public const DEFAULT_INSTRUCTION =
+        "Você é um consultor especialista em desenvolvimento organizacional e liderança.\n" .
+        "Analise os resultados do diagnóstico abaixo e produza um relatório qualitativo, " .
+        "executivo e construtivo.";
+
     public function buildPrompt(DiagnosticAssessment $assessment): string
     {
-        $tool      = $assessment->tool;
-        $user      = $assessment->user;
-        $results   = $assessment->results;
-        $global    = round((float) $assessment->global_score, 1);
-        $label     = $assessment->global_label;
+        $tool    = $assessment->tool;
+        $results = $assessment->results;
+        $global  = round((float) $assessment->global_score, 1);
+        $label   = $assessment->global_label;
+
+        // Instrução: prompt editável do diagnóstico (Admin do Sistema) ou padrão.
+        $instruction = trim((string) $tool->ai_prompt) ?: self::DEFAULT_INSTRUCTION;
 
         $indexLines = $results->map(function ($r) {
             $name  = $r->componentTool?->name ?? $r->dimension?->name ?? '—';
@@ -93,32 +103,23 @@ class DiagnosticReportService
             return "- {$name}" . ($code ? " ({$code})" : '') . ": {$score}/100 — {$lbl}";
         })->implode("\n");
 
-        return <<<PROMPT
-Você é um consultor especialista em desenvolvimento organizacional e liderança.
-Analise os resultados do diagnóstico abaixo e produza um relatório qualitativo estruturado.
+        // Perguntas do diagnóstico (contexto do que foi medido).
+        $questionLines = \App\Models\DiagnosticQuestion::where('diagnostic_tool_id', $tool->id)
+            ->with('dimension:id,name')
+            ->orderBy('sort_order')
+            ->get()
+            ->map(fn ($q) => '- ' . ($q->dimension?->name ? "[{$q->dimension->name}] " : '') . $q->content)
+            ->implode("\n");
 
-## Dados do Diagnóstico
+        $descricao = $tool->description ? "Descrição: {$tool->description}" : '';
+        $perguntas = $questionLines !== '' ? "\n### Perguntas aplicadas:\n{$questionLines}" : '';
 
-Ferramenta: {$tool->name}
-{$tool->description ? 'Descrição: ' . $tool->description : ''}
-AS SCORE® Global: {$global}/100 — {$label}
-
-### Pontuação por índice:
-{$indexLines}
-
-## Tarefa
-
-Responda EXCLUSIVAMENTE em JSON válido com este schema:
-
+        $schema = <<<'SCHEMA'
 ```json
 {
-  "archetype": "Uma frase curta que define o arquétipo organizacional (ex.: 'Organização em Transição')",
-  "content": "Análise qualitativa em 3-4 parágrafos em português. Comece com o contexto geral, depois analise os pontos fortes, os pontos de atenção e finalize com uma perspectiva de evolução. Use linguagem executiva, clara e construtiva.",
-  "highlights": [
-    "Ponto forte ou insight 1 (uma frase)",
-    "Ponto forte ou insight 2 (uma frase)",
-    "Ponto forte ou insight 3 (uma frase)"
-  ],
+  "archetype": "Uma frase curta que define o arquétipo (ex.: 'Organização em Transição')",
+  "content": "Análise qualitativa em 3-4 parágrafos em português, com quebras de linha \n\n entre os parágrafos.",
+  "highlights": ["Insight 1 (uma frase)", "Insight 2 (uma frase)", "Insight 3 (uma frase)"],
   "swot": {
     "strengths": ["força 1", "força 2"],
     "weaknesses": ["fraqueza 1", "fraqueza 2"],
@@ -127,8 +128,26 @@ Responda EXCLUSIVAMENTE em JSON válido com este schema:
   }
 }
 ```
+SCHEMA;
 
-Não inclua nada fora do JSON. Não use markdown fora do JSON. O campo `content` deve estar em um único string com quebras de linha `\n\n` entre os parágrafos.
+        return <<<PROMPT
+{$instruction}
+
+## Dados do Diagnóstico
+
+Ferramenta: {$tool->name}
+{$descricao}
+Score Global: {$global}/100 — {$label}
+
+### Pontuação por índice:
+{$indexLines}
+{$perguntas}
+
+## Formato de saída (obrigatório)
+
+Responda EXCLUSIVAMENTE em JSON válido com este schema, sem nenhum texto fora do JSON:
+
+{$schema}
 PROMPT;
     }
 

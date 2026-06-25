@@ -14,7 +14,7 @@ class DiagnosticTool extends Model
 {
     protected $fillable = [
         'company_id', 'created_by', 'ai_provider_id', 'code', 'name', 'slug',
-        'short_description', 'description', 'type', 'input_source',
+        'short_description', 'description', 'ai_prompt', 'type', 'input_source',
         'result_mode', 'is_confidential', 'min_responses',
         'requires_review', 'icon', 'color', 'estimated_minutes',
         'is_published', 'is_platform_tool', 'sort_order', 'xp_reward', 'settings',
