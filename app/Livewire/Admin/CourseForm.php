@@ -38,8 +38,16 @@ class CourseForm extends Component
 
     public function mount(?Course $course = null): void
     {
-        // Conforme definido: apenas o Admin do Sistema cria/edita cursos.
-        abort_unless(auth()->user()->isPlatformAdmin(), 403);
+        $user = auth()->user();
+        if ($course && $course->exists) {
+            // Gestor só edita cursos da própria empresa; platform_admin edita qualquer um
+            if (!$user->isPlatformAdmin()) {
+                abort_unless(!$course->is_platform_course && $course->company_id === $user->company_id, 403);
+            }
+        } else {
+            // Criação: gestor pode criar cursos da sua empresa
+            abort_unless($user->isPlatformAdmin() || $user->isGestor(), 403);
+        }
 
         if ($course && $course->exists) {
             $this->courseId          = $course->id;
@@ -109,6 +117,7 @@ class CourseForm extends Component
             'thumbnail_path'    => $thumbPath,
         ];
 
+        $user = auth()->user();
         if ($this->courseId) {
             $course = Course::findOrFail($this->courseId);
             if ($data['is_published'] && !$course->is_published) {
@@ -116,11 +125,16 @@ class CourseForm extends Component
             }
             $course->update($payload);
         } else {
-            $payload['created_by']         = auth()->id();
-            $payload['company_id']         = null;   // curso de plataforma
-            $payload['is_platform_course'] = true;
-            $payload['slug']               = $this->uniqueSlug($data['title']);
-            $payload['published_at']       = $data['is_published'] ? now() : null;
+            $payload['created_by'] = auth()->id();
+            if ($user->isPlatformAdmin()) {
+                $payload['company_id']         = null;
+                $payload['is_platform_course'] = true;
+            } else {
+                $payload['company_id']         = $user->company_id;
+                $payload['is_platform_course'] = false;
+            }
+            $payload['slug']         = $this->uniqueSlug($data['title']);
+            $payload['published_at'] = $data['is_published'] ? now() : null;
             $course = Course::create($payload);
             $this->courseId = $course->id;
         }

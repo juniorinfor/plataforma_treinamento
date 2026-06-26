@@ -38,7 +38,10 @@ class CourseBuilder extends Component
 
     public function mount(Course $course): void
     {
-        abort_unless(auth()->user()->isPlatformAdmin(), 403);
+        $user = auth()->user();
+        if (!$user->isPlatformAdmin()) {
+            abort_unless(!$course->is_platform_course && $course->company_id === $user->company_id, 403);
+        }
         $this->courseId = $course->id;
     }
 

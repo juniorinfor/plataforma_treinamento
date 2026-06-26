@@ -55,6 +55,11 @@ Route::middleware(['auth', 'company', 'subscription'])->group(function () {
         Route::get('/courses/{course}/lessons/{lesson}/editor', App\Livewire\Admin\LessonEditor::class)->name('admin.courses.lesson.editor');
         Route::get('/courses/{course}/lessons/{lesson}/quiz', App\Livewire\Admin\QuizBuilder::class)->name('admin.courses.quiz.builder');
         Route::get('/users', App\Livewire\Admin\UserManagement::class)->name('admin.users');
+        Route::get('/library', App\Livewire\Admin\LibraryAdmin::class)->name('admin.library');
+        Route::get('/badges', App\Livewire\Admin\BadgeAdmin::class)->name('admin.badges');
+        Route::get('/challenges', App\Livewire\Admin\ChallengeAdmin::class)->name('admin.challenges');
+        Route::get('/certificates', App\Livewire\Admin\CertificateAdmin::class)->name('admin.certificates');
+        Route::get('/forum', App\Livewire\Admin\ForumAdmin::class)->name('admin.forum');
         Route::get('/reports', App\Livewire\Admin\ReportsPage::class)->name('admin.reports');
         Route::get('/diagnostics', App\Livewire\Admin\AdminDiagnostics::class)->name('admin.diagnostics');
     });
@@ -77,6 +82,12 @@ Route::middleware(['auth', 'company', 'subscription'])->group(function () {
                 Route::get('/{report}/pdf', [App\Http\Controllers\DiagnosticReportPdfController::class, 'downloadReport'])->name('pdf');
             });
         });
+
+        // Usuários da plataforma (todos + B2C)
+        Route::get('/users', App\Livewire\Platform\UserManagement::class)->name('users');
+
+        // XP e Níveis
+        Route::get('/levels', App\Livewire\Platform\LevelConfig::class)->name('levels');
 
         // Planos SaaS
         Route::prefix('plans')->name('plans.')->group(function () {

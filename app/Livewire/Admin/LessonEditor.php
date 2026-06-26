@@ -35,7 +35,10 @@ class LessonEditor extends Component
 
     public function mount(Course $course, Lesson $lesson): void
     {
-        abort_unless(auth()->user()->isPlatformAdmin(), 403);
+        $user = auth()->user();
+        if (!$user->isPlatformAdmin()) {
+            abort_unless(!$course->is_platform_course && $course->company_id === $user->company_id, 403);
+        }
         abort_unless($lesson->module->course_id === $course->id, 404);
         $this->courseId = $course->id;
         $this->lessonId = $lesson->id;
