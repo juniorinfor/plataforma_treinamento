@@ -121,6 +121,18 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
                 <span>Fórum</span>
             </a>
+
+            {{-- Minha Assinatura — apenas colaboradores (gestores têm seção própria abaixo) --}}
+            @if($authUser?->isEmployee())
+            <div class="pt-4 pb-2">
+                <span class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Minha Conta</span>
+            </div>
+            <a href="{{ route('my-subscription') }}"
+               class="tu-sidebar-link {{ request()->routeIs('my-subscription') ? 'active' : '' }}" wire:navigate>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                <span>Minha Assinatura</span>
+            </a>
+            @endif
             @endunless
 
             {{-- ══════════════════════════════════════════════
@@ -183,22 +195,15 @@
                 <span>Relatórios</span>
             </a>
 
-            {{-- Billing — apenas Gestor com permissão de pagamento (company_admin) --}}
-            @if($authUser?->canManageBilling())
+            {{-- Assinatura — todos os gestores --}}
             <div class="pt-4 pb-2">
                 <span class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Assinatura</span>
             </div>
-            <a href="{{ route('plans') }}"
-               class="tu-sidebar-link {{ request()->routeIs('plans') ? 'active' : '' }}" wire:navigate>
+            <a href="{{ route('my-subscription') }}"
+               class="tu-sidebar-link {{ request()->routeIs('my-subscription') ? 'active' : '' }}" wire:navigate>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                <span>Planos Empresariais</span>
+                <span>Minha Assinatura</span>
             </a>
-            <a href="{{ route('billing') }}"
-               class="tu-sidebar-link {{ request()->routeIs('billing') ? 'active' : '' }}" wire:navigate>
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
-                <span>Faturamento</span>
-            </a>
-            @endif
             @endif
 
             {{-- ══════════════════════════════════════════════

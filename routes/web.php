@@ -125,6 +125,7 @@ Route::middleware(['auth', 'company', 'subscription'])->group(function () {
     Route::get('/library', App\Livewire\Library\LibraryIndex::class)->name('library');
 
     // SaaS
+    Route::get('/minha-assinatura', App\Livewire\Saas\MySubscription::class)->name('my-subscription');
     Route::get('/plans', App\Livewire\Saas\PlansPage::class)->name('plans');
     Route::get('/billing', App\Livewire\Saas\BillingPage::class)->name('billing');
 });
