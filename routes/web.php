@@ -78,6 +78,20 @@ Route::middleware(['auth', 'company', 'subscription'])->group(function () {
             });
         });
 
+        // Planos SaaS
+        Route::prefix('plans')->name('plans.')->group(function () {
+            Route::get('/', App\Livewire\Platform\PlanIndex::class)->name('index');
+            Route::get('/create', App\Livewire\Platform\PlanForm::class)->name('create');
+            Route::get('/{plan}/edit', App\Livewire\Platform\PlanForm::class)->name('edit');
+        });
+
+        // Produtos (cursos avulsos e pacotes)
+        Route::prefix('products')->name('products.')->group(function () {
+            Route::get('/', App\Livewire\Platform\ProductIndex::class)->name('index');
+            Route::get('/create', App\Livewire\Platform\ProductForm::class)->name('create');
+            Route::get('/{product}/edit', App\Livewire\Platform\ProductForm::class)->name('edit');
+        });
+
         // Integrações da plataforma (Asaas, etc.)
         Route::get('/integracoes', App\Livewire\Platform\IntegrationSettings::class)->name('integrations');
     });
