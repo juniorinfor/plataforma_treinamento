@@ -1,3 +1,27 @@
+@php
+$typeMeta = [
+    'text'              => ['icon' => '📝', 'label' => 'Texto simples',    'color' => 'text-blue-600'],
+    'rich'              => ['icon' => '🎨', 'label' => 'Texto rico',       'color' => 'text-indigo-600'],
+    'video'             => ['icon' => '🎬', 'label' => 'Vídeo',            'color' => 'text-purple-600'],
+    'video_placeholder' => ['icon' => '🎥', 'label' => 'Vídeo em breve',   'color' => 'text-purple-400'],
+    'pdf'               => ['icon' => '📄', 'label' => 'PDF',              'color' => 'text-red-500'],
+    'image'             => ['icon' => '🖼️', 'label' => 'Imagem',           'color' => 'text-teal-600'],
+    'callout'           => ['icon' => '💡', 'label' => 'Destaque',         'color' => 'text-amber-600'],
+    'quote'             => ['icon' => '❝',  'label' => 'Citação',          'color' => 'text-slate-600'],
+    'comparison'        => ['icon' => '⚖️', 'label' => 'Comparativo',      'color' => 'text-fuchsia-600'],
+    'flashcards'        => ['icon' => '🃏', 'label' => 'Flashcards',       'color' => 'text-cyan-600'],
+    'scale'             => ['icon' => '📊', 'label' => 'Autoavaliação',    'color' => 'text-orange-600'],
+    'reflection'        => ['icon' => '✍️', 'label' => 'Reflexão',         'color' => 'text-emerald-600'],
+    'accordion'         => ['icon' => '📂', 'label' => 'Acordeão',         'color' => 'text-lime-600'],
+];
+$calloutStyles = [
+    'info'    => ['label' => 'Informação', 'bg' => 'bg-blue-50',    'border' => 'border-blue-200',    'text' => 'text-blue-800',    'icon' => 'ℹ️'],
+    'tip'     => ['label' => 'Dica',        'bg' => 'bg-emerald-50', 'border' => 'border-emerald-200', 'text' => 'text-emerald-800', 'icon' => '💡'],
+    'warning' => ['label' => 'Atenção',     'bg' => 'bg-amber-50',   'border' => 'border-amber-200',   'text' => 'text-amber-800',   'icon' => '⚠️'],
+    'success' => ['label' => 'Sucesso',     'bg' => 'bg-green-50',   'border' => 'border-green-200',   'text' => 'text-green-800',   'icon' => '✅'],
+];
+@endphp
+
 <div class="max-w-3xl mx-auto space-y-6 animate-fade-in">
 
     {{-- Navegação --}}
@@ -29,18 +53,13 @@
 
     {{-- Blocos de conteúdo --}}
     @forelse($this->blocks as $bi => $block)
+    @php $meta = $typeMeta[$block->type] ?? ['icon' => '❔', 'label' => $block->type, 'color' => 'text-gray-500']; @endphp
     <div class="tu-card overflow-hidden" wire:key="block-{{ $block->id }}">
 
         {{-- Header do bloco --}}
         <div class="flex items-center justify-between gap-2 px-4 py-2.5 bg-gray-50 border-b border-gray-100">
-            <span class="text-xs font-bold uppercase tracking-wider
-                {{ $block->type === 'text'  ? 'text-blue-600' : '' }}
-                {{ $block->type === 'video' ? 'text-purple-600' : '' }}
-                {{ $block->type === 'pdf'   ? 'text-red-500' : '' }}">
-                @if($block->type === 'text')  📝 Texto
-                @elseif($block->type === 'video') 🎬 Vídeo
-                @elseif($block->type === 'pdf')   📄 PDF
-                @endif
+            <span class="text-xs font-bold uppercase tracking-wider {{ $meta['color'] }}">
+                {{ $meta['icon'] }} {{ $meta['label'] }}
             </span>
             <div class="flex items-center gap-1">
                 <button wire:click="moveBlock({{ $block->id }}, 'up')" @disabled($bi === 0)
@@ -69,74 +88,66 @@
         <div class="p-5">
             @if($editingBlockId === $block->id)
 
-                {{-- Formulário de edição --}}
+                {{-- ══ Formulários de edição ══ --}}
                 @if($block->type === 'video')
                 <div class="space-y-3">
                     <label class="block text-sm font-semibold text-gray-700">URL do vídeo (YouTube ou Vimeo)</label>
                     <input type="url" wire:model="editVideoUrl" placeholder="https://www.youtube.com/watch?v=..."
                            class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none">
                     @error('editVideoUrl') <p class="text-xs text-red-500">{{ $message }}</p> @enderror
-                    <div class="flex gap-2">
-                        <button wire:click="saveEdit" class="px-4 py-2 text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white">Salvar</button>
-                        <button wire:click="cancelEdit" class="px-4 py-2 text-sm font-semibold rounded-xl border-2 border-gray-200 text-gray-600 hover:bg-gray-50">Cancelar</button>
-                    </div>
+                    @include('livewire.admin.partials.lesson-editor-save-cancel')
                 </div>
-                @else
+
+                @elseif($block->type === 'text')
                 <div class="space-y-3">
                     <label class="block text-sm font-semibold text-gray-700">Conteúdo do texto</label>
                     <textarea wire:model="editContent" rows="8" placeholder="Digite o conteúdo..."
                               class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none resize-y font-mono"></textarea>
                     @error('editContent') <p class="text-xs text-red-500">{{ $message }}</p> @enderror
-                    <div class="flex gap-2">
-                        <button wire:click="saveEdit" class="px-4 py-2 text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white">Salvar</button>
-                        <button wire:click="cancelEdit" class="px-4 py-2 text-sm font-semibold rounded-xl border-2 border-gray-200 text-gray-600 hover:bg-gray-50">Cancelar</button>
-                    </div>
+                    @include('livewire.admin.partials.lesson-editor-save-cancel')
                 </div>
+
+                @elseif($block->type === 'image')
+                <div class="space-y-3">
+                    <p class="text-xs text-gray-400">A imagem não pode ser substituída aqui — apenas a legenda. Exclua e crie um novo bloco para trocar a imagem.</p>
+                    <label class="block text-sm font-semibold text-gray-700">Legenda</label>
+                    <input type="text" wire:model="bufCaption" placeholder="Legenda da imagem (opcional)"
+                           class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none">
+                    @include('livewire.admin.partials.lesson-editor-save-cancel')
+                </div>
+
+                @elseif($block->type === 'rich')
+                @include('livewire.admin.partials.lesson-editor-rich-form', ['saveAction' => 'saveEdit'])
+
+                @elseif($block->type === 'callout')
+                @include('livewire.admin.partials.lesson-editor-callout-form', ['saveAction' => 'saveEdit', 'calloutStyles' => $calloutStyles])
+
+                @elseif($block->type === 'quote')
+                @include('livewire.admin.partials.lesson-editor-quote-form', ['saveAction' => 'saveEdit'])
+
+                @elseif($block->type === 'comparison')
+                @include('livewire.admin.partials.lesson-editor-comparison-form', ['saveAction' => 'saveEdit'])
+
+                @elseif($block->type === 'flashcards')
+                @include('livewire.admin.partials.lesson-editor-flashcards-form', ['saveAction' => 'saveEdit'])
+
+                @elseif($block->type === 'scale')
+                @include('livewire.admin.partials.lesson-editor-scale-form', ['saveAction' => 'saveEdit'])
+
+                @elseif($block->type === 'reflection')
+                @include('livewire.admin.partials.lesson-editor-reflection-form', ['saveAction' => 'saveEdit'])
+
+                @elseif($block->type === 'accordion')
+                @include('livewire.admin.partials.lesson-editor-accordion-form', ['saveAction' => 'saveEdit'])
+
+                @elseif($block->type === 'video_placeholder')
+                @include('livewire.admin.partials.lesson-editor-video-placeholder-form', ['saveAction' => 'saveEdit'])
                 @endif
 
-            @elseif($block->type === 'text')
+            @else
 
-                {{-- Exibição de texto --}}
-                <div class="prose prose-sm max-w-none text-gray-700 whitespace-pre-wrap">{{ $block->content }}</div>
-
-            @elseif($block->type === 'video')
-
-                {{-- Embed de vídeo --}}
-                @php $embedUrl = $block->settings['embed_url'] ?? null; @endphp
-                @if($embedUrl)
-                <div class="rounded-xl overflow-hidden bg-black aspect-video">
-                    <iframe src="{{ $embedUrl }}" class="w-full h-full" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                </div>
-                <p class="mt-2 text-xs text-gray-400 truncate">{{ $block->content }}</p>
-                @else
-                <p class="text-sm text-gray-400">URL inválida: {{ $block->content }}</p>
-                @endif
-
-            @elseif($block->type === 'pdf')
-
-                {{-- Exibição de PDF --}}
-                @php
-                    $filename = $block->settings['filename'] ?? basename($block->content);
-                    $size     = $block->settings['size'] ?? null;
-                    $kb       = $size ? round($size / 1024) : null;
-                @endphp
-                <div class="flex items-center gap-4 p-3 rounded-xl bg-red-50 border border-red-100">
-                    <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                    <div class="min-w-0">
-                        <p class="text-sm font-semibold text-gray-800 truncate">{{ $filename }}</p>
-                        @if($kb) <p class="text-xs text-gray-400">{{ $kb }} KB</p> @endif
-                    </div>
-                    <a href="{{ asset('storage/' . $block->content) }}" target="_blank"
-                       class="ml-auto text-sm font-semibold text-red-600 hover:text-red-700 shrink-0">
-                        Visualizar
-                    </a>
-                </div>
+                {{-- ══ Exibição (preview) ══ --}}
+                @include('livewire.admin.partials.lesson-block-preview', ['block' => $block, 'calloutStyles' => $calloutStyles])
 
             @endif
         </div>
@@ -154,23 +165,46 @@
         </div>
 
         @if(!$adding)
-        {{-- Botões de escolha de tipo --}}
-        <div class="p-5 flex flex-wrap gap-3">
-            <button wire:click="startAdding('text')"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-blue-200 text-blue-700 hover:bg-blue-50 text-sm font-semibold">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
-                Bloco de texto
-            </button>
-            <button wire:click="startAdding('video')"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-purple-200 text-purple-700 hover:bg-purple-50 text-sm font-semibold">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Vídeo externo
-            </button>
-            <button wire:click="startAdding('pdf')"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-red-200 text-red-700 hover:bg-red-50 text-sm font-semibold">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                Anexar PDF
-            </button>
+        {{-- Botões de escolha de tipo, agrupados --}}
+        <div class="p-5 space-y-4">
+
+            @php
+                $addBtns = [
+                    'Texto & mídia' => [
+                        ['rich', '🎨', 'Texto rico', 'border-indigo-200 text-indigo-700 hover:bg-indigo-50'],
+                        ['image', '🖼️', 'Imagem', 'border-teal-200 text-teal-700 hover:bg-teal-50'],
+                        ['pdf', '📄', 'Anexar PDF', 'border-red-200 text-red-700 hover:bg-red-50'],
+                        ['video', '🎬', 'Vídeo externo', 'border-purple-200 text-purple-700 hover:bg-purple-50'],
+                        ['video_placeholder', '🎥', 'Vídeo em breve', 'border-purple-200 text-purple-400 hover:bg-purple-50'],
+                    ],
+                    'Destaques' => [
+                        ['callout', '💡', 'Destaque', 'border-amber-200 text-amber-700 hover:bg-amber-50'],
+                        ['quote', '❝', 'Citação', 'border-slate-200 text-slate-700 hover:bg-slate-50'],
+                    ],
+                    'Interativo' => [
+                        ['comparison', '⚖️', 'Comparativo', 'border-fuchsia-200 text-fuchsia-700 hover:bg-fuchsia-50'],
+                        ['flashcards', '🃏', 'Flashcards', 'border-cyan-200 text-cyan-700 hover:bg-cyan-50'],
+                        ['accordion', '📂', 'Acordeão', 'border-lime-200 text-lime-700 hover:bg-lime-50'],
+                    ],
+                    'O aluno responde' => [
+                        ['reflection', '✍️', 'Reflexão', 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'],
+                        ['scale', '📊', 'Autoavaliação', 'border-orange-200 text-orange-700 hover:bg-orange-50'],
+                    ],
+                ];
+            @endphp
+            @foreach($addBtns as $groupLabel => $buttons)
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">{{ $groupLabel }}</p>
+                <div class="flex flex-wrap gap-2">
+                    @foreach($buttons as [$btnType, $btnIcon, $btnLabel, $btnClasses])
+                    <button wire:click="startAdding('{{ $btnType }}')"
+                            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 {{ $btnClasses }} text-sm font-semibold">
+                        <span>{{ $btnIcon }}</span> {{ $btnLabel }}
+                    </button>
+                    @endforeach
+                </div>
+            </div>
+            @endforeach
         </div>
 
         @elseif($adding === 'text')
@@ -211,6 +245,53 @@
                 <button wire:click="cancelAdding" class="px-4 py-2.5 text-sm font-semibold rounded-xl border-2 border-gray-200 text-gray-600 hover:bg-gray-50">Cancelar</button>
             </div>
         </div>
+
+        @elseif($adding === 'image')
+        <div class="p-5 space-y-3">
+            <label class="block text-sm font-semibold text-gray-700">Imagem</label>
+            <p class="text-xs text-gray-400">JPG, PNG ou WEBP. Máximo 5 MB.</p>
+            <input type="file" wire:model="bufImage" accept="image/*"
+                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer">
+            <div wire:loading wire:target="bufImage" class="text-xs text-gray-400">Carregando...</div>
+            @error('bufImage') <p class="text-xs text-red-500">{{ $message }}</p> @enderror
+            @if($bufImage)
+            <img src="{{ $bufImage->temporaryUrl() }}" class="max-h-48 rounded-xl border border-gray-100">
+            @endif
+            <label class="block text-sm font-semibold text-gray-700">Legenda (opcional)</label>
+            <input type="text" wire:model="bufCaption" placeholder="Legenda da imagem"
+                   class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none">
+            <div class="flex gap-2">
+                <button wire:click="addImage" class="px-5 py-2.5 text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white">Adicionar imagem</button>
+                <button wire:click="cancelAdding" class="px-4 py-2.5 text-sm font-semibold rounded-xl border-2 border-gray-200 text-gray-600 hover:bg-gray-50">Cancelar</button>
+            </div>
+        </div>
+
+        @elseif($adding === 'video_placeholder')
+        <div class="p-5">@include('livewire.admin.partials.lesson-editor-video-placeholder-form', ['saveAction' => 'addVideoPlaceholder'])</div>
+
+        @elseif($adding === 'rich')
+        <div class="p-5">@include('livewire.admin.partials.lesson-editor-rich-form', ['saveAction' => 'addRich'])</div>
+
+        @elseif($adding === 'callout')
+        <div class="p-5">@include('livewire.admin.partials.lesson-editor-callout-form', ['saveAction' => 'addCallout', 'calloutStyles' => $calloutStyles])</div>
+
+        @elseif($adding === 'quote')
+        <div class="p-5">@include('livewire.admin.partials.lesson-editor-quote-form', ['saveAction' => 'addQuote'])</div>
+
+        @elseif($adding === 'comparison')
+        <div class="p-5">@include('livewire.admin.partials.lesson-editor-comparison-form', ['saveAction' => 'addComparison'])</div>
+
+        @elseif($adding === 'flashcards')
+        <div class="p-5">@include('livewire.admin.partials.lesson-editor-flashcards-form', ['saveAction' => 'addFlashcards'])</div>
+
+        @elseif($adding === 'accordion')
+        <div class="p-5">@include('livewire.admin.partials.lesson-editor-accordion-form', ['saveAction' => 'addAccordion'])</div>
+
+        @elseif($adding === 'reflection')
+        <div class="p-5">@include('livewire.admin.partials.lesson-editor-reflection-form', ['saveAction' => 'addReflection'])</div>
+
+        @elseif($adding === 'scale')
+        <div class="p-5">@include('livewire.admin.partials.lesson-editor-scale-form', ['saveAction' => 'addScale'])</div>
         @endif
     </div>
 

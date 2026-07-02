@@ -33,45 +33,14 @@
 
         {{-- Blocos de conteúdo --}}
         @forelse($lesson->contents as $block)
-
-            @if($block->type === 'text')
-            <div class="mb-6 text-gray-700 leading-relaxed whitespace-pre-wrap text-sm">{{ $block->content }}</div>
-
-            @elseif($block->type === 'video')
-            @php $embedUrl = $block->settings['embed_url'] ?? null; @endphp
-            @if($embedUrl)
-            <div class="mb-6 rounded-xl overflow-hidden bg-black aspect-video">
-                <iframe src="{{ $embedUrl }}" class="w-full h-full" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen></iframe>
-            </div>
-            @endif
-
-            @elseif($block->type === 'pdf')
-            @php
-                $filename = $block->settings['filename'] ?? basename($block->content);
-                $size     = $block->settings['size'] ?? null;
-                $kb       = $size ? round($size / 1024) : null;
-            @endphp
-            <div class="mb-6 flex items-center gap-4 p-4 rounded-xl bg-red-50 border border-red-100">
-                <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-sm font-semibold text-gray-800 truncate">{{ $filename }}</p>
-                    @if($kb) <p class="text-xs text-gray-400">{{ $kb }} KB</p> @endif
-                </div>
-                <a href="{{ asset('storage/' . $block->content) }}" target="_blank" download
-                   class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                    Baixar
-                </a>
-            </div>
-
-            @endif
-
+        <div class="mb-6">
+            @include('livewire.admin.partials.lesson-block-preview', [
+                'block' => $block,
+                'interactive' => true,
+                'interactionAnswers' => $interactionAnswers,
+                'interactionSaved' => $interactionSaved,
+            ])
+        </div>
         @empty
         <div class="py-8 text-center">
             <p class="text-gray-400 text-sm">O conteúdo desta aula ainda não foi adicionado.</p>

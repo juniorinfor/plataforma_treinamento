@@ -4,6 +4,8 @@ namespace App\Livewire\Learning;
 
 use App\Models\Enrollment;
 use App\Models\Lesson;
+use App\Models\LessonContent;
+use App\Models\LessonInteraction;
 use App\Models\LessonProgress;
 use App\Models\PointTransaction;
 use App\Models\UserPoints;
@@ -18,6 +20,9 @@ class LessonViewer extends Component
     public int  $id;
     public bool $completed = false;
 
+    public array $interactionAnswers = [];
+    public array $interactionSaved = [];
+
     public function mount(int $id): void
     {
         $this->id = $id;
@@ -27,6 +32,37 @@ class LessonViewer extends Component
             ->where('lesson_id', $id)
             ->whereNotNull('completed_at')
             ->exists();
+
+        $contentIds = LessonContent::where('lesson_id', $id)
+            ->whereIn('type', ['reflection', 'scale'])
+            ->pluck('id');
+
+        LessonInteraction::where('user_id', auth()->id())
+            ->whereIn('lesson_content_id', $contentIds)
+            ->get()
+            ->each(function (LessonInteraction $interaction) {
+                $this->interactionAnswers[$interaction->lesson_content_id] = $interaction->response['value'] ?? null;
+                $this->interactionSaved[$interaction->lesson_content_id] = true;
+            });
+    }
+
+    public function selectScale(int $contentId, int $value): void
+    {
+        $this->interactionAnswers[$contentId] = $value;
+        $this->saveInteraction($contentId);
+    }
+
+    public function saveInteraction(int $contentId): void
+    {
+        $value = $this->interactionAnswers[$contentId] ?? null;
+        if ($value === null || $value === '') return;
+
+        LessonInteraction::updateOrCreate(
+            ['user_id' => auth()->id(), 'lesson_content_id' => $contentId],
+            ['response' => ['value' => $value]]
+        );
+
+        $this->interactionSaved[$contentId] = true;
     }
 
     public function completeLesson(): void
