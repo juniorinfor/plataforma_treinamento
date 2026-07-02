@@ -264,5 +264,8 @@ class DatabaseSeeder extends Seeder
 
         // Gamification: níveis completos, badges e desafios reais
         $this->call(GamificationSeeder::class);
+
+        // 3 cursos de soft skills da plataforma (conteúdo interativo com blocos)
+        $this->call(SoftSkillsCoursesSeeder::class);
     }
 }
