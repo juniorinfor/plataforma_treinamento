@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\DiagnosticAssessment;
 use App\Models\DiagnosticDimension;
 use App\Models\DiagnosticQuestion;
 use App\Models\DiagnosticQuestionOption;
@@ -11,38 +12,59 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 /**
- * Diagnóstico de Conformidade com a NR1 (3º banner).
+ * Diagnóstico de Riscos Psicossociais e Bem-Estar — NR1.
  *
- * Avalia o grau de implementação dos requisitos da Norma Regulamentadora nº 1
- * — Disposições Gerais e Gerenciamento de Riscos Ocupacionais (GRO/PGR) —
- * incluindo a gestão de riscos psicossociais (Portaria MTE nº 1.419/2024).
+ * Pesquisa de autopercepção do colaborador (não é um checklist de compliance
+ * do gestor), estruturada em 3 etapas conforme o material de referência
+ * "Questionário Base — NR-1 / indicadores — Plataforma":
  *
- * Escala de conformidade (1 a 5):
- *   1 Não atende · 2 Inicial · 3 Parcial · 4 Adequado · 5 Pleno
+ *   Etapa 1 — Avaliação do Bem-Estar Emocional
+ *     Equilíbrio Emocional · Segurança Psicológica · Motivação e Engajamento
  *
- * Idempotente: se já existir uma ferramenta com code "NR1", não recria.
+ *   Etapa 2 — Avaliação do Ambiente de Trabalho
+ *     Sentido de Pertencimento · Condições de Trabalho · Reconhecimento e Valorização
+ *
+ *   Etapa 3 — Avaliação de Fatores de Risco Psicossocial
+ *     Sobrecarga de Trabalho · Pressão e Estresse · Comunicação e Feedback
+ *
+ * Cada competência tem 2 perguntas, escala de frequência (Nunca → Sempre),
+ * pontuação = média simples das respostas (sem peso), conforme o material.
+ * As perguntas de "Pressão e Estresse" são formuladas de forma negativa
+ * ("...contribui para o meu estresse") e por isso usam reverse_scored=true,
+ * para que "Sempre" penalize a pontuação em vez de favorecê-la.
+ *
+ * Resultado confidencial e agregado (mín. 5 respostas) para preservar o
+ * anonimato do colaborador e viabilizar respostas honestas — este é
+ * justamente o "termômetro organizacional contínuo" que sustenta a
+ * conformidade preventiva exigida pela NR-1 (Portaria MTE nº 1.419/2024).
+ *
+ * Idempotente com segurança de dados: se já existirem avaliações respondidas
+ * para o NR1, o seeder não mexe em nada (evita corromper histórico real).
+ * Caso contrário, recria a estrutura do zero a cada execução.
  */
 class Nr1DiagnosticSeeder extends Seeder
 {
-    /**
-     * Escala de grau de implementação (substitui a Likert de concordância).
-     *
-     * @var array<int, array{label: string, value: int}>
-     */
+    /** Escala de frequência (Nunca → Sempre). */
     private array $scale = [
-        ['label' => 'Não atende',  'value' => 1],
-        ['label' => 'Inicial',     'value' => 2],
-        ['label' => 'Parcial',     'value' => 3],
-        ['label' => 'Adequado',    'value' => 4],
-        ['label' => 'Pleno',       'value' => 5],
+        ['label' => 'Nunca',          'value' => 1],
+        ['label' => 'Raramente',      'value' => 2],
+        ['label' => 'Às vezes',       'value' => 3],
+        ['label' => 'Frequentemente', 'value' => 4],
+        ['label' => 'Sempre',         'value' => 5],
     ];
 
     public function run(): void
     {
-        // Idempotência — evita duplicar se rodar novamente
-        if (DiagnosticTool::where('code', 'NR1')->exists()) {
-            $this->command?->warn('Diagnóstico NR1 já existe — seeder ignorado.');
-            return;
+        $existing = DiagnosticTool::where('code', 'NR1')->first();
+
+        if ($existing) {
+            if (DiagnosticAssessment::where('diagnostic_tool_id', $existing->id)->exists()) {
+                $this->command?->warn('Diagnóstico NR1 já possui avaliações respondidas — seeder ignorado para não corromper dados.');
+                return;
+            }
+
+            $existing->delete(); // cascade: dimensões, perguntas e opções
+            $this->command?->info('Diagnóstico NR1 anterior removido — recriando com a nova estrutura de 3 etapas.');
         }
 
         $admin = User::where('role', 'platform_admin')->first()
@@ -52,15 +74,16 @@ class Nr1DiagnosticSeeder extends Seeder
             'company_id'        => null,
             'created_by'        => $admin?->id,
             'code'              => 'NR1',
-            'name'              => 'Diagnóstico de Conformidade com a NR1',
-            'slug'              => 'diagnostico-conformidade-nr1',
-            'short_description' => 'Avalie o nível de conformidade da sua empresa com a NR1 (GRO/PGR) e os riscos psicossociais.',
-            'description'       => 'Diagnóstico de maturidade e conformidade com a Norma Regulamentadora nº 1 '
-                . '(Disposições Gerais e Gerenciamento de Riscos Ocupacionais). Avalia a estrutura do '
-                . 'Programa de Gerenciamento de Riscos (PGR), a identificação e avaliação de perigos, a '
-                . 'gestão de riscos psicossociais (incorporada pela Portaria MTE nº 1.419/2024), a '
-                . 'capacitação dos trabalhadores e a documentação e responsabilidades legais. O resultado '
-                . 'aponta o grau de implementação por área e gera um plano de ação para adequação.',
+            'name'              => 'Diagnóstico de Riscos Psicossociais e Bem-Estar (NR-1)',
+            'slug'              => 'diagnostico-riscos-psicossociais-nr1',
+            'short_description' => 'Pesquisa confidencial de bem-estar emocional, ambiente de trabalho e fatores de risco psicossocial, alinhada à NR-1.',
+            'description'       => 'Pesquisa de autopercepção do colaborador em 3 etapas: Bem-Estar Emocional, '
+                . 'Ambiente de Trabalho e Fatores de Risco Psicossocial. As respostas são confidenciais e o '
+                . 'resultado é sempre agregado por equipe/empresa, nunca individual — o que garante honestidade '
+                . 'nas respostas. Funciona como um termômetro organizacional contínuo, gerando evidências de '
+                . 'monitoramento e histórico de evolução exigidos pela atualização da NR-1 (Portaria MTE nº '
+                . '1.419/2024), servindo de apoio complementar ao PGR na identificação e prevenção de riscos '
+                . 'psicossociais antes que se tornem afastamentos, conflitos ou turnover.',
             'type'              => 'simple',
             'input_source'      => 'questionnaire',
             'result_mode'       => 'aggregated',
@@ -68,151 +91,45 @@ class Nr1DiagnosticSeeder extends Seeder
             'min_responses'     => 5,
             'requires_review'   => false,
             'icon'              => 'shield-check',
-            'color'             => '#0D9488', // teal — leitura de "auditoria/conformidade"
-            'estimated_minutes' => 10,
+            'color'             => '#0D9488',
+            'estimated_minutes' => 8,
             'is_published'      => true,
             'is_platform_tool'  => true,
-            'sort_order'        => 3, // terceiro banner
+            'sort_order'        => 3,
             'xp_reward'         => 60,
             'settings'          => [
-                'scale_kind' => 'implementation',
+                'scale_kind'  => 'frequency',
                 'legal_basis' => 'NR1 / Portaria MTE nº 1.419/2024',
+                'stages'      => [
+                    ['name' => 'Bem-Estar Emocional', 'dimension_codes' => ['EMO', 'SPS', 'MOT']],
+                    ['name' => 'Ambiente de Trabalho', 'dimension_codes' => ['PER', 'CDT', 'REC']],
+                    ['name' => 'Fatores de Risco Psicossocial', 'dimension_codes' => ['SOB', 'PRE', 'COM']],
+                ],
             ],
+            'ai_prompt' => $this->aiPrompt(),
         ]);
 
-        $dimensions = [
-            [
-                'code' => 'GRO', 'name' => 'Gerenciamento de Riscos (PGR)',
-                'color' => '#0D9488', 'weight' => 1.20,
-                'questions' => [
-                    [
-                        'A empresa possui um Programa de Gerenciamento de Riscos (PGR) formalizado e atualizado.',
-                        'O PGR é o documento central exigido pela NR1 para o gerenciamento de riscos ocupacionais.',
-                    ],
-                    [
-                        'O PGR contém o inventário de riscos e o respectivo plano de ação.',
-                        'A NR1 exige que o PGR seja composto por inventário de riscos e plano de ação.',
-                    ],
-                    [
-                        'O plano de ação possui responsáveis, prazos e acompanhamento das medidas.',
-                        'Medidas de prevenção devem ter cronograma, responsáveis e formas de aferição.',
-                    ],
-                    [
-                        'O PGR é revisado periodicamente e sempre que há mudanças nos processos ou após incidentes.',
-                        'A revisão deve ocorrer no mínimo a cada 2 anos (ou 3 anos com SST certificado) e após eventos relevantes.',
-                    ],
-                ],
-            ],
-            [
-                'code' => 'IDR', 'name' => 'Identificação e Avaliação de Riscos',
-                'color' => '#0EA5E9', 'weight' => 1.10,
-                'questions' => [
-                    [
-                        'Os perigos e fatores de risco das atividades são sistematicamente identificados.',
-                        'Inclui riscos físicos, químicos, biológicos, ergonômicos e de acidentes.',
-                    ],
-                    [
-                        'Os riscos são avaliados quanto à probabilidade e à severidade (gradação do risco).',
-                        'A avaliação deve permitir priorizar as medidas de controle.',
-                    ],
-                    [
-                        'São adotadas medidas de prevenção seguindo a hierarquia de controle.',
-                        'Eliminação → controles de engenharia → administrativos → EPI, nessa ordem de prioridade.',
-                    ],
-                    [
-                        'A eficácia das medidas de controle implementadas é monitorada.',
-                        'Verifica-se se as medidas adotadas realmente reduziram o risco.',
-                    ],
-                ],
-            ],
-            [
-                'code' => 'PSI', 'name' => 'Riscos Psicossociais',
-                'color' => '#8B5CF6', 'weight' => 1.10,
-                'questions' => [
-                    [
-                        'A empresa identifica fatores de risco psicossocial (sobrecarga, assédio, jornada, pressão).',
-                        'A Portaria MTE nº 1.419/2024 incorporou os riscos psicossociais ao gerenciamento do PGR.',
-                    ],
-                    [
-                        'Os riscos psicossociais estão contemplados no inventário de riscos do PGR.',
-                        'Devem ser tratados com o mesmo rigor dos demais riscos ocupacionais.',
-                    ],
-                    [
-                        'Existem canais de escuta e acolhimento para situações psicossociais.',
-                        'Ex.: canal de denúncia de assédio, apoio psicológico, ouvidoria.',
-                    ],
-                    [
-                        'São adotadas ações preventivas para saúde mental e bem-estar no trabalho.',
-                        'Ex.: gestão de carga de trabalho, programas de qualidade de vida, capacitação de líderes.',
-                    ],
-                ],
-            ],
-            [
-                'code' => 'CAP', 'name' => 'Capacitação e Treinamentos',
-                'color' => '#F59E0B', 'weight' => 1.00,
-                'questions' => [
-                    [
-                        'Os trabalhadores recebem capacitação sobre os riscos das suas atividades.',
-                        'A NR1 obriga a informação e capacitação dos trabalhadores quanto aos riscos.',
-                    ],
-                    [
-                        'Os treinamentos obrigatórios (inicial, periódico, eventual) são realizados nos prazos.',
-                        'Cada NR específica define a carga horária e periodicidade dos treinamentos.',
-                    ],
-                    [
-                        'Há registro/controle dos treinamentos realizados (listas, certificados, conteúdo).',
-                        'A comprovação documental é exigida em fiscalizações.',
-                    ],
-                    [
-                        'As lideranças são preparadas para atuar na prevenção e na gestão de riscos.',
-                        'Inclui riscos psicossociais e o papel do gestor na cultura de segurança.',
-                    ],
-                ],
-            ],
-            [
-                'code' => 'DOC', 'name' => 'Documentação, Responsabilidades e Participação',
-                'color' => '#6366F1', 'weight' => 1.00,
-                'questions' => [
-                    [
-                        'A documentação de SST está organizada, atualizada e acessível.',
-                        'PGR, ASO, ordens de serviço, laudos e registros devem estar disponíveis.',
-                    ],
-                    [
-                        'As responsabilidades de empregador e trabalhadores estão definidas e comunicadas.',
-                        'A NR1 estabelece deveres e direitos de ambas as partes.',
-                    ],
-                    [
-                        'Os trabalhadores são informados sobre os riscos e medidas de prevenção (ordens de serviço).',
-                        'A informação formal aos trabalhadores é uma obrigação prevista na NR1.',
-                    ],
-                    [
-                        'Há participação dos trabalhadores/CIPA na identificação e controle de riscos.',
-                        'A consulta e participação fortalecem o gerenciamento de riscos.',
-                    ],
-                ],
-            ],
-        ];
-
-        foreach ($dimensions as $dSort => $dim) {
+        foreach ($this->dimensions() as $dSort => $dim) {
             $dimension = DiagnosticDimension::create([
                 'diagnostic_tool_id' => $tool->id,
                 'code'               => $dim['code'],
                 'name'               => $dim['name'],
                 'slug'               => Str::slug($dim['code']),
+                'description'        => $dim['description'],
                 'color'              => $dim['color'],
-                'weight'             => $dim['weight'],
+                'weight'             => 1.00,
                 'sort_order'         => $dSort + 1,
             ]);
 
-            foreach ($dim['questions'] as $qSort => [$content, $help]) {
+            foreach ($dim['questions'] as $qSort => $q) {
                 $question = DiagnosticQuestion::create([
                     'diagnostic_tool_id'      => $tool->id,
                     'diagnostic_dimension_id' => $dimension->id,
                     'type'                    => 'scale',
-                    'content'                 => $content,
-                    'help_text'               => $help,
+                    'content'                 => $q['content'],
+                    'help_text'               => $q['help'] ?? null,
                     'is_required'             => true,
-                    'reverse_scored'          => false,
+                    'reverse_scored'          => $q['reverse'] ?? false,
                     'weight'                  => 1,
                     'sort_order'              => $qSort + 1,
                     'settings'                => ['scale_min' => 1, 'scale_max' => 5],
@@ -229,6 +146,142 @@ class Nr1DiagnosticSeeder extends Seeder
             }
         }
 
-        $this->command?->info('Diagnóstico NR1 criado: 5 dimensões, 20 perguntas.');
+        $this->command?->info('Diagnóstico NR1 criado: 3 etapas, 9 competências, 18 perguntas.');
+    }
+
+    /**
+     * @return array<int, array{code: string, name: string, description: string, color: string, questions: array}>
+     */
+    private function dimensions(): array
+    {
+        return [
+            // ── ETAPA 1 — Avaliação do Bem-Estar Emocional ──────────────
+            [
+                'code' => 'EMO', 'name' => 'Equilíbrio Emocional',
+                'color' => '#0EA5E9',
+                'description' => 'Etapa 1 — Bem-Estar Emocional. Avalia a capacidade do colaborador de lidar '
+                    . 'com desafios emocionais e manter equilíbrio entre vida profissional e pessoal.',
+                'questions' => [
+                    ['content' => 'Sinto que posso expressar minhas opiniões e dificuldades no trabalho.'],
+                    ['content' => 'Consigo manter um equilíbrio entre trabalho e vida pessoal.'],
+                ],
+            ],
+            [
+                'code' => 'SPS', 'name' => 'Segurança Psicológica',
+                'color' => '#0284C7',
+                'description' => 'Etapa 1 — Bem-Estar Emocional. Avalia se o colaborador se sente seguro para '
+                    . 'compartilhar ideias e dificuldades sem medo de julgamento ou retaliação.',
+                'questions' => [
+                    ['content' => 'Sinto-me seguro(a) para compartilhar ideias sem medo de julgamento.'],
+                    ['content' => 'Acredito que a empresa se preocupa com meu bem-estar emocional.'],
+                ],
+            ],
+            [
+                'code' => 'MOT', 'name' => 'Motivação e Engajamento',
+                'color' => '#38BDF8',
+                'description' => 'Etapa 1 — Bem-Estar Emocional. Avalia o nível de energia, motivação e '
+                    . 'percepção de valorização do colaborador no dia a dia.',
+                'questions' => [
+                    ['content' => 'Sinto-me motivado(a) e energizado(a) para realizar meu trabalho diariamente.'],
+                    ['content' => 'Acredito que minha contribuição é valorizada pela equipe.'],
+                ],
+            ],
+
+            // ── ETAPA 2 — Avaliação do Ambiente de Trabalho ─────────────
+            [
+                'code' => 'PER', 'name' => 'Sentido de Pertencimento',
+                'color' => '#10B981',
+                'description' => 'Etapa 2 — Ambiente de Trabalho. Avalia o quanto o colaborador se sente parte '
+                    . 'da equipe e incluído na cultura da empresa.',
+                'questions' => [
+                    ['content' => 'Sinto que faço parte da equipe e sou valorizado(a).'],
+                    ['content' => 'A cultura da empresa promove um sentimento de inclusão.'],
+                ],
+            ],
+            [
+                'code' => 'CDT', 'name' => 'Condições de Trabalho',
+                'color' => '#059669',
+                'description' => 'Etapa 2 — Ambiente de Trabalho. Avalia a percepção sobre segurança, saúde e '
+                    . 'suporte adequado para o desempenho das atividades.',
+                'questions' => [
+                    ['content' => 'Considero meu ambiente de trabalho saudável e seguro.'],
+                    ['content' => 'Recebo apoio adequado para desempenhar minhas atividades.'],
+                ],
+            ],
+            [
+                'code' => 'REC', 'name' => 'Reconhecimento e Valorização',
+                'color' => '#34D399',
+                'description' => 'Etapa 2 — Ambiente de Trabalho. Avalia se o colaborador percebe reconhecimento '
+                    . 'pela liderança e oportunidades reais de crescimento.',
+                'questions' => [
+                    ['content' => 'Acredito que meus esforços são reconhecidos pela liderança.'],
+                    ['content' => 'Sinto que tenho oportunidades para crescimento e desenvolvimento.'],
+                ],
+            ],
+
+            // ── ETAPA 3 — Avaliação de Fatores de Risco Psicossocial ────
+            [
+                'code' => 'SOB', 'name' => 'Sobrecarga de Trabalho',
+                'color' => '#F59E0B',
+                'description' => 'Etapa 3 — Fatores de Risco Psicossocial. Avalia se a carga e a jornada de '
+                    . 'trabalho são compatíveis com a capacidade real de entrega do colaborador.',
+                'questions' => [
+                    ['content' => 'Consigo realizar minhas atividades dentro da jornada de trabalho sem sentir sobrecarga.'],
+                    ['content' => 'Sinto que a carga de trabalho é gerenciável.'],
+                ],
+            ],
+            [
+                'code' => 'PRE', 'name' => 'Pressão e Estresse',
+                'color' => '#EF4444',
+                'description' => 'Etapa 3 — Fatores de Risco Psicossocial. Avalia o nível de pressão e estresse '
+                    . 'gerado pelo ambiente e pelos prazos de trabalho. Perguntas formuladas de forma negativa '
+                    . '(reverse_scored) — quanto maior a frequência relatada, pior o resultado.',
+                'questions' => [
+                    ['content' => 'O ambiente de trabalho contribui para o meu estresse.', 'reverse' => true],
+                    ['content' => 'Sinto que há pressão excessiva para cumprir prazos.', 'reverse' => true],
+                ],
+            ],
+            [
+                'code' => 'COM', 'name' => 'Comunicação e Feedback',
+                'color' => '#F97316',
+                'description' => 'Etapa 3 — Fatores de Risco Psicossocial. Avalia a clareza da comunicação '
+                    . 'interna e a qualidade do feedback recebido pelo colaborador.',
+                'questions' => [
+                    ['content' => 'A comunicação na equipe é clara e eficiente.'],
+                    ['content' => 'Recebo feedback construtivo que me ajuda a melhorar.'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Instrução para geração do relatório de IA — embute o framework de
+     * interpretação por faixa de pontuação do material de referência, para
+     * que o relatório qualitativo fale a mesma língua do questionário.
+     */
+    private function aiPrompt(): string
+    {
+        return <<<PROMPT
+Você é um consultor especialista em saúde ocupacional, riscos psicossociais e gestão de pessoas,
+atuando como leitor técnico dos resultados da pesquisa de Bem-Estar e Riscos Psicossociais (NR-1)
+de uma empresa. Esta pesquisa é confidencial e agregada — nunca identifique nem infira dados de
+colaboradores individuais.
+
+O questionário tem 3 etapas, cada uma com 3 competências avaliadas numa escala de frequência
+(Nunca a Sempre, convertida em pontuação 0-100):
+
+Etapa 1 — Bem-Estar Emocional: Equilíbrio Emocional, Segurança Psicológica, Motivação e Engajamento.
+Etapa 2 — Ambiente de Trabalho: Sentido de Pertencimento, Condições de Trabalho, Reconhecimento e Valorização.
+Etapa 3 — Fatores de Risco Psicossocial: Sobrecarga de Trabalho, Pressão e Estresse, Comunicação e Feedback.
+
+Use este referencial de leitura por faixa de pontuação (não repita os números, use-os para calibrar o tom):
+90-100 Excelente · 75-89 Saudável · 60-74 Atenção preventiva · 40-59 Risco moderado de desgaste · abaixo de 40 Risco elevado.
+
+Escreva o relatório em português, com tom executivo, direto e construtivo, sempre orientado à ação
+preventiva — nunca alarmista. Conecte explicitamente os pontos fracos identificados à necessidade de
+ações preventivas e ao gerenciamento de riscos psicossociais previsto na NR-1 (Portaria MTE nº
+1.419/2024), tratando o resultado como um retrato de um momento — um "termômetro organizacional" —
+que deve orientar prioridades de gestão preventiva e não apenas registrar um diagnóstico isolado.
+PROMPT;
     }
 }

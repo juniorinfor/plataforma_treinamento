@@ -161,6 +161,267 @@ class DiagnosticActionPlanService
                 'type'        => 'reflection',
             ],
         ],
+
+        // ── EMO — Equilíbrio Emocional (NR-1) ─────────────────────────
+        'EMO' => [
+            [
+                'title'       => 'Implemente pausas estruturadas durante a jornada',
+                'description' => 'Estabeleça intervalos breves (5–10 min) a cada 90 minutos de trabalho intenso. Pausas regulares recuperam concentração e regulação emocional.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Ofereça apoio psicológico acessível',
+                'description' => 'Disponibilize um canal de apoio psicológico (EAP, convênio ou parceria) e comunique ativamente sua existência para reduzir o estigma de buscar ajuda.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Treine gestores para identificar sinais de sobrecarga emocional',
+                'description' => 'Irritabilidade, isolamento e queda de produtividade podem indicar desgaste emocional. Capacite líderes a agir cedo, antes do afastamento.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Capacite a liderança em gestão emocional e escuta ativa',
+                'description' => 'Inteligência emocional aplicada à liderança ajuda a criar ambientes psicologicamente mais seguros e reduz o risco de adoecimento da equipe.',
+                'type'        => 'course',
+            ],
+            [
+                'title'       => 'Reflexão: o equilíbrio emocional é prioridade real ou responsabilidade individual?',
+                'description' => 'Avalie se existem políticas concretas (não apenas discurso) que sustentam o bem-estar emocional dos colaboradores.',
+                'type'        => 'reflection',
+            ],
+        ],
+
+        // ── SPS — Segurança Psicológica (NR-1) ────────────────────────
+        'SPS' => [
+            [
+                'title'       => 'Institua rituais de escuta sem julgamento',
+                'description' => 'Reuniões 1:1 regulares onde erros e dúvidas podem ser expostos sem punição. Segurança psicológica se constrói com repetição, não com um discurso único.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Estabeleça um canal de manifestação anônimo',
+                'description' => 'Ofereça um meio seguro para colaboradores relatarem preocupações sem medo de retaliação.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Modele vulnerabilidade na liderança',
+                'description' => 'Líderes que admitem erros e pedem ajuda publicamente autorizam a equipe a fazer o mesmo.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Capacite líderes em Segurança Psicológica',
+                'description' => 'Formação prática baseada no conceito de Amy Edmondson sobre construção de equipes psicologicamente seguras.',
+                'type'        => 'course',
+            ],
+            [
+                'title'       => 'Leitura: "A Organização Sem Medo" — Amy Edmondson',
+                'description' => 'Obra referência sobre segurança psicológica nas organizações e seu impacto direto em aprendizagem e desempenho.',
+                'type'        => 'reading',
+            ],
+        ],
+
+        // ── MOT — Motivação e Engajamento (NR-1) ──────────────────────
+        'MOT' => [
+            [
+                'title'       => 'Reconheça publicamente contribuições da equipe',
+                'description' => 'Reconhecimento verbal ou formal frequente (não apenas em avaliações anuais) sustenta o engajamento contínuo.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Conecte tarefas ao propósito da empresa',
+                'description' => 'Explique o "porquê" por trás das atividades, não apenas o "o quê". Colaboradores engajados entendem o impacto do próprio trabalho.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Revise a distribuição de tarefas repetitivas',
+                'description' => 'Alterne responsabilidades e ofereça desafios que estimulem crescimento, reduzindo o risco de desmotivação por rotina.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Capacite gestores em liderança motivacional e feedback',
+                'description' => 'Gestores preparados para motivar e dar feedback contínuo sustentam engajamento de forma mais duradoura que bonificações pontuais.',
+                'type'        => 'course',
+            ],
+            [
+                'title'       => 'Reflexão: o que motiva sua equipe hoje — salário, propósito, reconhecimento ou crescimento?',
+                'description' => 'Direcione as ações de retenção com mais precisão a partir dessa resposta.',
+                'type'        => 'reflection',
+            ],
+        ],
+
+        // ── PER — Sentido de Pertencimento (NR-1) ─────────────────────
+        'PER' => [
+            [
+                'title'       => 'Promova rituais de integração contínuos',
+                'description' => 'Não restrinja a integração ao onboarding; crie momentos periódicos de conexão entre os times.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Garanta representatividade nas decisões',
+                'description' => 'Inclua vozes diversas em decisões que afetam o dia a dia da equipe.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Combata silos entre setores',
+                'description' => 'Promova projetos e encontros interdepartamentais para fortalecer a sensação de pertencer ao todo, não apenas à própria área.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Capacite líderes em cultura organizacional inclusiva',
+                'description' => 'Cultura de pertencimento não se sustenta apenas em discurso; exige prática de liderança consistente.',
+                'type'        => 'course',
+            ],
+            [
+                'title'       => 'Reflexão: seus colaboradores se sentem parte da história da empresa ou apenas executores de tarefas?',
+                'description' => 'Avalie se existem espaços reais de participação e reconhecimento do papel de cada pessoa.',
+                'type'        => 'reflection',
+            ],
+        ],
+
+        // ── CDT — Condições de Trabalho (NR-1) ────────────────────────
+        'CDT' => [
+            [
+                'title'       => 'Realize inspeção do ambiente físico e ergonômico',
+                'description' => 'Avalie mobiliário, iluminação, ruído e conforto térmico. Condições inadequadas aumentam fadiga e risco de adoecimento.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Garanta recursos adequados para a função',
+                'description' => 'Ferramentas, sistemas e equipamentos insuficientes geram frustração e sobrecarga percebida pelo colaborador.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Formalize canal de solicitação de melhorias no ambiente',
+                'description' => 'Permita que colaboradores reportem problemas estruturais com resposta e prazo definidos.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Capacite times responsáveis em ergonomia e bem-estar no ambiente de trabalho',
+                'description' => 'Formação técnica para quem cuida da infraestrutura reduz reincidência de problemas estruturais.',
+                'type'        => 'course',
+            ],
+            [
+                'title'       => 'Reflexão: se você trabalhasse um dia na função de um colaborador operacional, o que mudaria?',
+                'description' => 'Coloque-se no lugar de quem executa a atividade para identificar condições que passam despercebidas na gestão.',
+                'type'        => 'reflection',
+            ],
+        ],
+
+        // ── REC — Reconhecimento e Valorização (NR-1) ─────────────────
+        'REC' => [
+            [
+                'title'       => 'Crie um programa formal de reconhecimento',
+                'description' => 'Defina critérios claros e uma cadência regular (mensal/trimestral), evitando informalidade que gera percepção de favoritismo.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Treine líderes para dar feedback de valorização específico',
+                'description' => 'Reconhecimento genérico ("bom trabalho") tem menos impacto que feedback específico sobre o que foi bem feito e por quê.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Revise trilhas de crescimento e plano de carreira',
+                'description' => 'Falta de perspectiva de crescimento é um dos principais motivos de desengajamento e turnover.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Capacite gestores em feedback e reconhecimento',
+                'description' => 'Reconhecimento eficaz é uma habilidade de liderança treinável, não apenas um traço de personalidade.',
+                'type'        => 'course',
+            ],
+            [
+                'title'       => 'Reflexão: quando foi a última vez que cada membro da equipe recebeu um reconhecimento específico e genuíno?',
+                'description' => 'Se a resposta não vier rápido, esse é o primeiro sinal de que o reconhecimento não está sistematizado.',
+                'type'        => 'reflection',
+            ],
+        ],
+
+        // ── SOB — Sobrecarga de Trabalho (NR-1) ───────────────────────
+        'SOB' => [
+            [
+                'title'       => 'Mapeie a carga de trabalho real por colaborador',
+                'description' => 'Compare o volume de demandas com a capacidade real de entrega. Sobrecarga sistêmica é um risco psicossocial previsto na NR-1.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Redistribua tarefas e revise prazos irreais',
+                'description' => 'Prazos incompatíveis com a carga de trabalho são gatilho direto de estresse crônico e afastamentos.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Documente a sobrecarga no inventário de riscos do PGR',
+                'description' => 'Registre esse fator como risco psicossocial formal, com plano de ação e prazos, conforme a Portaria MTE nº 1.419/2024.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Capacite gestores em gestão de tempo e priorização de equipes',
+                'description' => 'Priorização mal feita no nível da gestão se traduz em sobrecarga percebida pela equipe operacional.',
+                'type'        => 'course',
+            ],
+            [
+                'title'       => 'Reflexão: quais tarefas da equipe poderiam ser eliminadas, automatizadas ou redistribuídas sem perda de qualidade?',
+                'description' => 'Reduzir sobrecarga muitas vezes começa por eliminar trabalho de baixo valor, não por contratar mais gente.',
+                'type'        => 'reflection',
+            ],
+        ],
+
+        // ── PRE — Pressão e Estresse (NR-1) ───────────────────────────
+        'PRE' => [
+            [
+                'title'       => 'Revise metas e prazos com a equipe operacional antes de definir',
+                'description' => 'Metas definidas sem consulta a quem executa geram pressão desconectada da realidade da operação.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Implemente rotina de descompressão pós-entregas críticas',
+                'description' => 'Após períodos de alta pressão, formalize pausas de recuperação para evitar esgotamento acumulado.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Monitore indicadores de afastamento e presenteísmo',
+                'description' => 'Aumento de faltas ou queda de produtividade sem explicação aparente pode sinalizar estresse crônico não reportado.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Capacite lideranças em gestão de estresse e prevenção de burnout',
+                'description' => 'Líderes que reconhecem os próprios limites são mais capazes de proteger a equipe de sobrecarga emocional.',
+                'type'        => 'course',
+            ],
+            [
+                'title'       => 'Leitura: identificar e mitigar riscos psicossociais conforme a NR-1 atualizada',
+                'description' => 'Aprofunde-se nas exigências da Portaria MTE nº 1.419/2024 sobre saúde mental e prevenção no ambiente de trabalho.',
+                'type'        => 'reading',
+            ],
+        ],
+
+        // ── COM — Comunicação e Feedback (NR-1) ───────────────────────
+        'COM' => [
+            [
+                'title'       => 'Estabeleça cadência formal de feedback (não apenas anual)',
+                'description' => 'Feedback contínuo previne acúmulo de ruídos e mal-entendidos que geram conflitos silenciosos.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Padronize a comunicação de mudanças e decisões',
+                'description' => 'Falta de clareza sobre decisões organizacionais gera ansiedade e boatos. Comunique-se de forma transparente e tempestiva.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Treine equipes em comunicação não violenta e assertiva',
+                'description' => 'Habilidades de comunicação reduzem conflitos interpessoais e fortalecem a confiança entre colegas e liderança.',
+                'type'        => 'action',
+            ],
+            [
+                'title'       => 'Capacite equipes em comunicação assertiva e feedback construtivo',
+                'description' => 'Comunicação clara é uma competência treinável que reduz diretamente ruídos e retrabalho.',
+                'type'        => 'course',
+            ],
+            [
+                'title'       => 'Reflexão: sua equipe sabe onde buscar informação confiável sobre mudanças na empresa, ou depende de rumores?',
+                'description' => 'A ausência de canais oficiais claros é preenchida por especulação, que corrói a confiança organizacional.',
+                'type'        => 'reflection',
+            ],
+        ],
     ];
 
     /**
@@ -173,6 +434,12 @@ class DiagnosticActionPlanService
         'RBI' => ['gestao', 'planejamento-estrategico', 'indicadores', 'financeiro'],
         'SEI' => ['esg', 'compliance', 'governanca', 'sustentabilidade'],
         'LII' => ['lideranca', 'coaching', 'comunicacao', 'desenvolvimento-pessoal'],
+
+        // NR-1 — riscos psicossociais e bem-estar
+        'SPS' => ['lideranca'],
+        'MOT' => ['lideranca'],
+        'REC' => ['lideranca'],
+        'COM' => ['lideranca', 'compliance'],
     ];
 
     // ── Ponto de entrada público ──────────────────────────────────────
